@@ -5,53 +5,69 @@
 #include <iostream>
 
 namespace AviaLib {
-    customer customer_operations::add_customer(std::string fio, std::string tel, std::string date, std::string adress) {
-
-        customer new_cast = { fio, tel, date, adress };
-        return new_cast;
+    // Операции добавления
+    void addOrder(avia_database& db, const order& newOrder) {
+        db.order_list.push_back(newOrder);
     }
-    customer customer_operations::input_customer() {
-        customer new_customer;
 
-        std::cout << "Введите ФИО покупателя: ";
-        std::cin >> new_customer.fio;
-        std::cout << "Введите номер телефона покупателя: ";
-        std::cin >> new_customer.tel;
-        std::cout << "Введите дату приобретения билета покупателем: ";
-        std::cin >> new_customer.date;
-        std::cout << "Введите адрес покупателя: ";
-        std::cin >> new_customer.adress;
-        std::cin.ignore(); // Очистить буфер после ввода чисел, чтобы корректно считать строку
-        return new_customer;
+    void addCustomer(avia_database& db, const customer& newCustomer) {
+        db.customer_list.push_back(newCustomer);
     }
-    ticket ticket_operations::add_ticket(std::string destination, std::string depart, std::string distributor, std::string price, std::string id, std::string customer_fio) {
-        ticket new_ticket;
-        new_ticket.destination = destination;
-        new_ticket.depart = depart;
-        new_ticket.distributor = distributor;
-        new_ticket.price = price;
-        new_ticket.id = id;
-        new_ticket.customer_fio = customer_fio; // Устанавливаем ФИО пассажира
-        return new_ticket;
-    }
-    ticket ticket_operations::input_ticket() {
-        ticket new_ticket;
 
-        std::cout << "Введите пункт назначения: ";
-        std::cin >> new_ticket.destination;
-        std::cout << "Введите место отправления: ";
-        std::cin >> new_ticket.depart;
-        std::cout << "Введите дистрибьютора: ";
-        std::cin >> new_ticket.distributor;
-        std::cout << "Введите цену: ";
-        std::cin >> new_ticket.price;
-        std::cout << "Введите ID: ";
-        std::cin >> new_ticket.id;
-        std::cout << "Введите ФИО пассажира: ";
-        std::cin.ignore(); // Очистить буфер после ввода чисел, чтобы корректно считать строку
-        std::getline(std::cin, new_ticket.customer_fio);
-
-        return new_ticket;
+    void addTicket(avia_database& db, const ticket& newTicket) {
+        db.ticket_list.push_back(newTicket);
     }
+
+    void addOperation(avia_database& db, const operation& newOperation) {
+        db.operation_list.push_back(newOperation);
+    }
+    // Операция удаления
+    void removeOrderByID(avia_database& db, int orderID) {
+        auto it = std::remove_if(db.order_list.begin(), db.order_list.end(),
+            [orderID](const order& o) { return o.ticket_id == orderID; });
+
+        if (it != db.order_list.end()) {
+            db.order_list.erase(it, db.order_list.end());
+        }
+        else {
+            std::cout << "Ошибка: Заказ с указанным ID не найден." << std::endl;
+        }
+    }
+
+    void removeCustomerByFIO(avia_database& db, const std::string& fio) {
+        auto it = std::remove_if(db.customer_list.begin(), db.customer_list.end(),
+            [fio](const customer& c) { return c.fio == fio; });
+
+        if (it != db.customer_list.end()) {
+            db.customer_list.erase(it, db.customer_list.end());
+        }
+        else {
+            std::cout << "Ошибка: Покупатель с указанным ФИО не найден." << std::endl;
+        }
+    }
+
+    // Операции поиска
+
+    order findOrderByID(const avia_database& db, int orderID) {
+        for (const auto& order : db.order_list) {
+            if (order.ticket_id == orderID) {
+                return order;
+            }
+        }
+        std::cout << "Заказ с указанным ID не существует." << std::endl;
+        return order{}; // Вернуть "пустой" объект order
+    }
+
+    customer findCustomerByFIO(const avia_database& db, const std::string& fio) {
+        for (const auto& customer : db.customer_list) {
+            if (customer.fio == fio) {
+                return customer;
+            }
+        }
+        std::cout << "Пользователь с указанным ФИО не существует." << std::endl;
+        return customer{}; // Вернуть "пустой" объект customer
+    }
+
+
 }
 
