@@ -17,10 +17,16 @@ namespace AviaLib {
         std::string id;
         std::string customer_fio;
     };
+    struct avia_operations {
+        bool operation_pir_ref;
+        std::string date_of_operation;
+
+
+    };
     class customer_operations {
     public:
         static customer add_customer(std::string fio, std::string tel, std::string date, std::string adress);
-
+        static customer input_customer();
     };
     class ticket_operations {
     public:
@@ -28,35 +34,3 @@ namespace AviaLib {
         static ticket input_ticket();
     };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
- /*  namespace MathLibrary
-    {
-    class Arithmetic
-    {
-    public:
-        // Returns a + b
-        static double Add(double a, double b);
-
-        // Returns a - b
-        static double Subtract(double a, double b);
-
-        // Returns a * b
-        static double Multiply(double a, double b);
-
-        // Returns a / b
-        static double Divide(double a, double b);
-    };
-    }
-    */

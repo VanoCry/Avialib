@@ -10,6 +10,20 @@ namespace AviaLib {
         customer new_cast = { fio, tel, date, adress };
         return new_cast;
     }
+    customer customer_operations::input_customer() {
+        customer new_customer;
+
+        std::cout << "Введите ФИО покупателя: ";
+        std::cin >> new_customer.fio;
+        std::cout << "Введите номер телефона покупателя: ";
+        std::cin >> new_customer.tel;
+        std::cout << "Введите дату приобретения билета покупателем: ";
+        std::cin >> new_customer.date;
+        std::cout << "Введите адрес покупателя: ";
+        std::cin >> new_customer.adress;
+        std::cin.ignore(); // Очистить буфер после ввода чисел, чтобы корректно считать строку
+        return new_customer;
+    }
     ticket ticket_operations::add_ticket(std::string destination, std::string depart, std::string distributor, std::string price, std::string id, std::string customer_fio) {
         ticket new_ticket;
         new_ticket.destination = destination;
@@ -41,27 +55,3 @@ namespace AviaLib {
     }
 }
 
-
-
-/*namespace MathLibrary
-{
-    double Arithmetic::Add(double a, double b)
-    {
-        return a + b;
-    }
-
-    double Arithmetic::Subtract(double a, double b)
-    {
-        return a - b;
-    }
-
-    double Arithmetic::Multiply(double a, double b)
-    {
-        return a * b;
-    }
-
-    double Arithmetic::Divide(double a, double b)
-    {
-        return a / b;
-    }
-}*/
