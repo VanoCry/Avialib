@@ -23,6 +23,7 @@ namespace AviaLib {
         string GetDate();
         string GetAdress();
         void AddCustomerToDB(struct Avia_DataBase* db, Customer& new_cast);
+        Customer InputCustomer();
     };
     //-----------------------------------------------------------------------------------------
     class Order {
@@ -39,6 +40,7 @@ namespace AviaLib {
         int getPrice();
         int getTicketID();
         void AddOrderToDB(struct Avia_DataBase* db, Order& new_order);
+        Order InputOrder();
     };
     //-----------------------------------------------------------------------------------------
     class Ticket {
@@ -59,6 +61,8 @@ namespace AviaLib {
         int getPrice();
         int getTicketID();
         string getFIO();
+        void AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket);
+        Ticket InputTicket();
     };
     //-----------------------------------------------------------------------------------------
      class Operation {
@@ -75,6 +79,8 @@ public:
     string getOperationDate();
     int getTicketID();
     int getTel();
+    void AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op);
+    Operation InputOperation();
 };
     //-----------------------------------------------------------------------------------------
      class Avia_DataBase {
@@ -123,82 +129,3 @@ public:
          }
     };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-// Структура "Покупатель"
-struct customer {
-    std::string fio;
-    int tel;
-    std::string date;
-    std::string adress;
-};
-
-// Структура "Билет"
-
-// Структура "Операция"
-struct operation {
-    std::string ticket_operation; // "выдача билета" или "возврат билета"
-    std::string operation_date;
-    int ticket_id;
-    int tel;
-};
-
-// Структура "Авиа_база_данных"
-struct avia_database {
-    std::vector<order> order_list;
-    std::vector<customer> customer_list;
-    std::vector<operation> operation_list;
-    std::vector<ticket> ticket_list;
-
-    
-};*/
-
-
-
-    /*
-    class add_operations {
-    public:
-        static void addOrder(avia_database& db, const order& newOrder);
-        static void addCustomer(avia_database& db, const customer& newCustomer);
-        static void addTicket(avia_database& db, const ticket& newTicket);
-        static void addOperation(avia_database& db, const operation& newOperation);
-    };
-    class remove_operations {
-    public:
-        static void removeOrderByID(avia_database& db, int orderID);
-        static void removeCustomerByFIO(avia_database& db, const std::string& fio);
-    };
-    class find_operations {
-    public:
-        static order findOrderByID(const avia_database& db, int orderID);
-        static customer findCustomerByFIO(const avia_database& db, const std::string& fio);
-    };
-}
-// Псевдонимы для классов
-using AviaAdd = AviaLib::add_operations;
-using AviaRemove = AviaLib::remove_operations;
-using AviaFind = AviaLib::find_operations;*/

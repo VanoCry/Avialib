@@ -40,6 +40,28 @@ namespace AviaLib {
         db->customer_list = (struct Customer*)realloc(db->customer_list, db->customer_count * sizeof(struct Customer));
         db->customer_list[db->customer_count - 1] = customerToAdd;
     }
+    Customer InputCustomer() {
+        string fio;
+        int tel;
+        string date;
+        string address;
+
+        cout << "Введите ФИО: ";
+        getline(cin, fio);
+
+        cout << "Введите телефон: ";
+        cin >> tel;
+
+        cout << "Введите дату: ";
+        cin.ignore(); // Очищаем буфер после ввода числа
+        getline(cin, date);
+
+        cout << "Введите адрес: ";
+        cin.ignore(); // Очищаем буфер после ввода числа
+        getline(cin, address);
+
+        return Customer(fio, tel, date, address);
+    }
     //-----------------------------------------------------------------------------------------
     Order::Order(string company_name,static Ticket& ticketObj) {
         this->company_name = company_name;
@@ -74,6 +96,28 @@ namespace AviaLib {
         db->order_count++;
         db->order_list = (struct Order*)realloc(db->order_list, db->order_count * sizeof(struct Order));
         db->order_list[db->order_count - 1] = new_order;
+    }
+    Order Order::InputOrder() {
+        string company_name;
+        string distributor;
+        int price;
+        int ticket_id;
+
+        cout << "Введите название компании: ";
+        getline(cin, company_name);
+
+        cout << "Введите дистрибьютора: ";
+        getline(cin, distributor);
+
+        cout << "Введите цену: ";
+        cin >> price;
+
+        cout << "Введите номер билета: ";
+        cin >> ticket_id;
+
+        cin.ignore(); // Очищаем буфер после ввода чисел
+
+        return Order(company_name, distributor, price, ticket_id);
     }
     //-----------------------------------------------------------------------------------------
     Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio) {
@@ -110,7 +154,7 @@ namespace AviaLib {
     string Ticket::getFIO() {
         return fio;
     }
-    void AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket) {
+    void Ticket::AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket) {
         // Выделяем память для нового билета
         // Заполняем новый билет данными из параметра new_ticket
         struct Ticket ticketToAdd(
@@ -125,6 +169,36 @@ namespace AviaLib {
         db->ticket_count++;
         db->ticket_list = (struct Ticket*)realloc(db->ticket_list, db->ticket_count * sizeof(struct Ticket));
         db->ticket_list[db->ticket_count - 1] = ticketToAdd;
+    }
+    Ticket Ticket::InputTicket() {
+        string depart;
+        string destination;
+        string distributor;
+        int price;
+        int ticket_id;
+        string fio;
+
+        cout << "Введите место отправления: ";
+        getline(cin, depart);
+
+        cout << "Введите место назначения: ";
+        getline(cin, destination);
+
+        cout << "Введите дистрибьютора: ";
+        getline(cin, distributor);
+
+        cout << "Введите цену: ";
+        cin >> price;
+
+        cout << "Введите номер билета: ";
+        cin >> ticket_id;
+
+        cin.ignore(); // Очищаем буфер после ввода чисел
+
+        cout << "Введите ФИО: ";
+        getline(cin, fio);
+
+        return Ticket(depart, destination, distributor, price, ticket_id, fio);
     }
     //-----------------------------------------------------------------------------------------
     Operation::Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust) {
@@ -151,7 +225,7 @@ namespace AviaLib {
     int Operation::getTel() {
         return tel;
     }
-    void AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op) {
+    void Operation::AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op) {
         // Выделяем память для нового билета
         // Заполняем новый билет данными из параметра new_ticket
         struct Operation opToAdd(
@@ -165,81 +239,27 @@ namespace AviaLib {
         db->operation_list = (struct Operation*)realloc(db->operation_list, db->operation_count * sizeof(struct Operation));
         db->operation_list[db->operation_count - 1] = opToAdd;
     }
+    Operation Operation::InputOperation() {
+        string ticket_operation;
+        string operation_date;
+        int ticket_id;
+        int tel;
+
+        cout << "Введите тип операции (выдача билета или возврат билета): ";
+        getline(cin, ticket_operation);
+
+        cout << "Введите дату операции: ";
+        getline(cin, operation_date);
+
+        cout << "Введите номер билета: ";
+        cin >> ticket_id;
+
+        cout << "Введите номер телефона: ";
+        cin >> tel;
+
+        cin.ignore(); // Очищаем буфер после ввода чисел
+
+        return Operation(ticket_operation, operation_date, ticket_id, tel);
+    }
     //-----------------------------------------------------------------------------------------
 }
-
-
-
-
-
-
-
-
-
-
-
-/*
-   // Операции добавления
-   void addOrder(avia_database& db, const order& newOrder) {
-       db.order_list.push_back(newOrder);
-   }
-
-   void addCustomer(avia_database& db, const customer& newCustomer) {
-       db.customer_list.push_back(newCustomer);
-   }
-
-   void addTicket(avia_database& db, const ticket& newTicket) {
-       db.ticket_list.push_back(newTicket);
-   }
-
-   void addOperation(avia_database& db, const operation& newOperation) {
-       db.operation_list.push_back(newOperation);
-   }
-   // Операция удаления
-   void removeOrderByID(avia_database& db, int orderID) {
-       auto it = std::remove_if(db.order_list.begin(), db.order_list.end(),
-           [orderID](const order& o) { return o.ticket_id == orderID; });
-
-       if (it != db.order_list.end()) {
-           db.order_list.erase(it, db.order_list.end());
-       }
-       else {
-           std::cout << "Ошибка: Заказ с указанным ID не найден." << std::endl;
-       }
-   }
-
-   void removeCustomerByFIO(avia_database& db, const std::string& fio) {
-       auto it = std::remove_if(db.customer_list.begin(), db.customer_list.end(),
-           [fio](const customer& c) { return c.fio == fio; });
-
-       if (it != db.customer_list.end()) {
-           db.customer_list.erase(it, db.customer_list.end());
-       }
-       else {
-           std::cout << "Ошибка: Покупатель с указанным ФИО не найден." << std::endl;
-       }
-   }
-
-   // Операции поиска
-
-   order findOrderByID(const avia_database& db, int orderID) {
-       for (const auto& order : db.order_list) {
-           if (order.ticket_id == orderID) {
-               return order;
-           }
-       }
-       std::cout << "Заказ с указанным ID не существует." << std::endl;
-       return order{}; // Вернуть "пустой" объект order
-   }
-
-   customer findCustomerByFIO(const avia_database& db, const std::string& fio) {
-       for (const auto& customer : db.customer_list) {
-           if (customer.fio == fio) {
-               return customer;
-           }
-       }
-       std::cout << "Пользователь с указанным ФИО не существует." << std::endl;
-       return customer{}; // Вернуть "пустой" объект customer
-   }
-
-   */
