@@ -1,8 +1,28 @@
 #pragma once
 #include <vector>
 using namespace std;
-
+/*
+* Уже решаю проблему описанную в имейле
+* конструкторы и деструкторы уже прописаны
+* Сначала создаётся класс покупателя, потом билета, затем
+* Заказа а за ним класс операции
+*/
 namespace AviaLib {
+    //-----------------------------------------------------------------------------------------
+    class Customer {
+    private:
+        string fio;
+        int tel;
+        string date;
+        string adress;
+    public:
+        Customer();
+        Customer(string fio, int tel, string date, string adress);
+        string GetFIO();
+        int GetTel();
+        string GetDate();
+        string GetAdress();
+    };
     //-----------------------------------------------------------------------------------------
     class Order {
     private:
@@ -12,27 +32,14 @@ namespace AviaLib {
         int ticket_id;
     public:
         Order();
-        Order(string company_name, string distributor, int price, int ticket_id) {
-            this->company_name = company_name;
-            this->distributor = distributor;
-            this->price = price;
-            this->ticket_id = ticket_id;
-        }
-        string getCompany() {
-            return company_name;
-        }
-        string getDistributor() {
-            return distributor;
-        }
-        int getPrice() {
-            return price;
-        }
-        int getTicketID() {
-            return ticket_id;
-        }
+        Order(string company_name,static Ticket& ticketObj);
+        string getCompany();
+        string getDistributor();
+        int getPrice();
+        int getTicketID();
     };
     //-----------------------------------------------------------------------------------------
-    class ticket {
+    class Ticket {
     private:
         string depart;
         string destination;
@@ -41,64 +48,43 @@ namespace AviaLib {
         int ticket_id;
         string fio;
     public:
-        ticket();
-        ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio) {
-            this->depart = depart;
-            this->destination = destination;
-            this->distributor = distributor;
-            this->price = price;
-            this->ticket_id = ticket_id;
-            this->fio = fio;
-        }
-        string getDepart() {
-            return depart;
-        }
-        string getDestination() {
-            return destination;
-        }
-        string getDistributor(){
-            return distributor;
-        }
-        int getPrice() {
-            return price;
-        }
-        int getTicketID() {
-            return ticket_id;
-        }
-        string getFIO() {
-            return fio;
-        }
+        Ticket();
+        Ticket(string depart, string destination, string distributor, int price, int ticket_id, static Customer& new_cust);
+        string getDepart();
+        string getDestination();
+        string getDistributor();
+        int getPrice();
+        int getTicketID();
+        string getFIO();
     };
     //-----------------------------------------------------------------------------------------
-     class operation {
+     class Operation {
 private:
     string ticket_operation; // "выдача билета" или "возврат билета"
     string operation_date;
     int ticket_id;
     int tel;
 public:
-    operation();
-    operation(string ticket_operation, string operation_date, int ticket_id, int tel) {
+    Operation();
+    Operation(string ticket_operation, string operation_date, Ticket& new_ticket, Customer& new_cust) {
         this->ticket_operation = ticket_operation;
         this->operation_date = operation_date;
-        this->tel = tel;
-        this->ticket_id = ticket_id;
+        this->tel = new_cust.GetTel();
+        this->ticket_id = new_ticket.getTicketID();
     }
-    string getOperation() {
-        return ticket_operation;
-    }
-    string getOperationDate() {
-        return operation_date;
-    }
-    int getTicketID() {
-        return ticket_id;
-    }
-    int getTel() {
-        return tel;
-    }
+    string getOperation();
+    string getOperationDate();
+    int getTicketID();
+    int getTel();
 };
     //-----------------------------------------------------------------------------------------
-
+     class Avia_DataBase {
+     private:
+         vector<Order> order_list;
+         vector<Customer> customer_list;
+         vector<Operation> operation_list;
+         vector<Ticket> ticket_list;
+    };
 }
 
 
