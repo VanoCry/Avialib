@@ -94,38 +94,8 @@ public:
          size_t operation_count;
          size_t ticket_count;
      public:
-         struct Avia_DataBase* createAviaDataBase() {
-             struct Avia_DataBase* db = (struct Avia_DataBase*)malloc(sizeof(struct Avia_DataBase));
-             if (db == NULL) {
-                 return NULL; // Ошибка выделения памяти
-             }
-
-             // Инициализируем списки как пустые
-             db->order_list = NULL;
-             db->customer_list = NULL;
-             db->operation_list = NULL;
-             db->ticket_list = NULL;
-             db->order_count = 0;
-             db->customer_count = 0;
-             db->operation_count = 0;
-             db->ticket_count = 0;
-
-             return db;
-         }
+         struct Avia_DataBase* createAviaDataBase();
          // Функция для освобождения памяти базы данных
-         void destroyAviaDataBase(struct Avia_DataBase* db) {
-             if (db == NULL) {
-                 return;
-             }
-
-             // Освобождаем память для списков и их элементов
-             free(db->order_list);
-             free(db->customer_list);
-             free(db->operation_list);
-             free(db->ticket_list);
-
-         // Освобождаем память для самой базы данных
-             free(db);
-         }
+         void destroyAviaDataBase(struct Avia_DataBase* db);
     };
 }
