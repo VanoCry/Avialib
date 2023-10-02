@@ -69,6 +69,12 @@ namespace AviaLib {
         this->price = ticketObj.getPrice();
         this->ticket_id = ticketObj.getTicketID();
     }
+    Order::Order(string company_name, string distributor, int price, int ticket_id) {
+        this->company_name = company_name;
+        this->distributor = distributor;
+        this->price = price;
+        this->ticket_id = ticket_id;
+    }
     string Order::getCompany() {
         return company_name;
     }

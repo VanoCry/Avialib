@@ -35,6 +35,7 @@ namespace AviaLib {
     public:
         Order();
         Order(string company_name,static Ticket& ticketObj);
+        Order(string company_name, string distributor, int price, int ticket_id);
         string getCompany();
         string getDistributor();
         int getPrice();
