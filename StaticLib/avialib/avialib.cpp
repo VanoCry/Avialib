@@ -28,6 +28,18 @@ namespace AviaLib {
     string Customer::GetAdress() {
         return adress;
     }
+    void Customer::AddCustomerToDB(struct Avia_DataBase* db, Customer& new_cast) {
+        struct Customer customerToAdd(
+            new_cast.GetFIO(),
+            new_cast.GetTel(),
+            new_cast.GetDate(),
+            new_cast.GetAdress()
+        );
+        // Увеличиваем размер списка покупателей и добавляем нового покупателя
+        db->customer_count++;
+        db->customer_list = (struct Customer*)realloc(db->customer_list, db->customer_count * sizeof(struct Customer));
+        db->customer_list[db->customer_count - 1] = customerToAdd;
+    }
     //-----------------------------------------------------------------------------------------
     Order::Order(string company_name,static Ticket& ticketObj) {
         this->company_name = company_name;
@@ -64,6 +76,14 @@ namespace AviaLib {
         db->order_list[db->order_count - 1] = new_order;
     }
     //-----------------------------------------------------------------------------------------
+    Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio) {
+        this->depart = depart;
+        this->destination = destination;
+        this->distributor = distributor;
+        this->price = price;
+        this->ticket_id = ticket_id;
+        this->fio = fio;
+    }
     Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, Customer& new_cust) {
         this->depart = depart;
         this->destination = destination;
@@ -90,12 +110,34 @@ namespace AviaLib {
     string Ticket::getFIO() {
         return fio;
     }
+    void AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket) {
+        // Выделяем память для нового билета
+        // Заполняем новый билет данными из параметра new_ticket
+        struct Ticket ticketToAdd(
+            new_ticket.getDepart(),
+            new_ticket.getDestination(),
+            new_ticket.getDistributor(),
+            new_ticket.getPrice(),
+            new_ticket.getTicketID(),
+            new_ticket.getFIO()
+        );
+        // Увеличиваем размер списка билетов и добавляем новый билет
+        db->ticket_count++;
+        db->ticket_list = (struct Ticket*)realloc(db->ticket_list, db->ticket_count * sizeof(struct Ticket));
+        db->ticket_list[db->ticket_count - 1] = ticketToAdd;
+    }
     //-----------------------------------------------------------------------------------------
-    Operation::Operation(string ticket_operation, string operation_date,static Ticket& new_ticket,static Customer& new_cust) {
+    Operation::Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust) {
         this->ticket_operation = ticket_operation;
         this->operation_date = operation_date;
         this->tel = new_cust.GetTel();
         this->ticket_id = new_ticket.getTicketID();
+    }
+    Operation::Operation(string ticket_operation, string operation_date, int tel, int ticketID) {
+        this->ticket_operation = ticket_operation;
+        this->operation_date = operation_date;
+        this->tel = tel;
+        this->ticket_id = ticketID;
     }
     string Operation::getOperation() {
         return ticket_operation;
@@ -108,6 +150,20 @@ namespace AviaLib {
     }
     int Operation::getTel() {
         return tel;
+    }
+    void AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op) {
+        // Выделяем память для нового билета
+        // Заполняем новый билет данными из параметра new_ticket
+        struct Operation opToAdd(
+            new_op.getOperation(),
+            new_op.getOperationDate(),
+            new_op.getTicketID(),
+            new_op.getTel()
+        );
+        // Увеличиваем размер списка билетов и добавляем новый билет
+        db->operation_count++;
+        db->operation_list = (struct Operation*)realloc(db->operation_list, db->operation_count * sizeof(struct Operation));
+        db->operation_list[db->operation_count - 1] = opToAdd;
     }
     //-----------------------------------------------------------------------------------------
 }

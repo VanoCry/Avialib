@@ -22,6 +22,7 @@ namespace AviaLib {
         int GetTel();
         string GetDate();
         string GetAdress();
+        void AddCustomerToDB(struct Avia_DataBase* db, Customer& new_cast);
     };
     //-----------------------------------------------------------------------------------------
     class Order {
@@ -50,6 +51,7 @@ namespace AviaLib {
         string fio;
     public:
         Ticket();
+        Ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio);
         Ticket(string depart, string destination, string distributor, int price, int ticket_id, static Customer& new_cust);
         string getDepart();
         string getDestination();
@@ -67,12 +69,8 @@ private:
     int tel;
 public:
     Operation();
-    Operation(string ticket_operation, string operation_date, Ticket& new_ticket, Customer& new_cust) {
-        this->ticket_operation = ticket_operation;
-        this->operation_date = operation_date;
-        this->tel = new_cust.GetTel();
-        this->ticket_id = new_ticket.getTicketID();
-    }
+    Operation(string ticket_operation, string operation_date, int tel, int ticketID);
+    Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust);
     string getOperation();
     string getOperationDate();
     int getTicketID();
