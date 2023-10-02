@@ -10,6 +10,24 @@
 *
 */
 namespace AviaLib {
+    Customer::Customer(string fio, int tel, string date, string adress) {
+        this->fio = fio;
+        this->tel = tel;
+        this->date = date;
+        this->adress = adress;
+    }
+    string Customer::GetFIO() {
+        return fio;
+    }
+    int Customer::GetTel() {
+        return tel;
+    }
+    string Customer::GetDate() {
+        return date;
+    }
+    string Customer::GetAdress() {
+        return adress;
+    }
     //-----------------------------------------------------------------------------------------
     Order::Order(string company_name,static Ticket& ticketObj) {
         this->company_name = company_name;
@@ -31,6 +49,19 @@ namespace AviaLib {
 
     int Order::getTicketID() {
         return ticket_id;
+    }
+    void Order::AddOrderToDB(struct Avia_DataBase* db, Order& new_order) {
+        // Выделяем память для нового заказа
+        struct Order new_order;
+        new_order.company_name = new_order.getCompany(); // Выделение памяти и копирование строки
+        new_order.distributor = new_order.getDistributor();
+        new_order.price = new_order.getPrice();
+        new_order.ticket_id = new_order.getTicketID();
+
+        // Увеличиваем размер списка заказов и добавляем новый заказ
+        db->order_count++;
+        db->order_list = (struct Order*)realloc(db->order_list, db->order_count * sizeof(struct Order));
+        db->order_list[db->order_count - 1] = new_order;
     }
     //-----------------------------------------------------------------------------------------
     Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, Customer& new_cust) {

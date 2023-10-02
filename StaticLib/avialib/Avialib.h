@@ -37,6 +37,7 @@ namespace AviaLib {
         string getDistributor();
         int getPrice();
         int getTicketID();
+        void AddOrderToDB(struct Avia_DataBase* db, Order& new_order);
     };
     //-----------------------------------------------------------------------------------------
     class Ticket {
@@ -79,11 +80,49 @@ public:
 };
     //-----------------------------------------------------------------------------------------
      class Avia_DataBase {
-     private:
-         vector<Order> order_list;
-         vector<Customer> customer_list;
-         vector<Operation> operation_list;
-         vector<Ticket> ticket_list;
+     public:
+         struct Order* order_list;
+         struct Customer* customer_list;
+         struct Operation* operation_list;
+         struct Ticket* ticket_list;
+         size_t order_count;
+         size_t customer_count;
+         size_t operation_count;
+         size_t ticket_count;
+     public:
+         struct Avia_DataBase* createAviaDataBase() {
+             struct Avia_DataBase* db = (struct Avia_DataBase*)malloc(sizeof(struct Avia_DataBase));
+             if (db == NULL) {
+                 return NULL; // Ошибка выделения памяти
+             }
+
+             // Инициализируем списки как пустые
+             db->order_list = NULL;
+             db->customer_list = NULL;
+             db->operation_list = NULL;
+             db->ticket_list = NULL;
+             db->order_count = 0;
+             db->customer_count = 0;
+             db->operation_count = 0;
+             db->ticket_count = 0;
+
+             return db;
+         }
+         // Функция для освобождения памяти базы данных
+         void destroyAviaDataBase(struct Avia_DataBase* db) {
+             if (db == NULL) {
+                 return;
+             }
+
+             // Освобождаем память для списков и их элементов
+             free(db->order_list);
+             free(db->customer_list);
+             free(db->operation_list);
+             free(db->ticket_list);
+
+         // Освобождаем память для самой базы данных
+             free(db);
+         }
     };
 }
 
