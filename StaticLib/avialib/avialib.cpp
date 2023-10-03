@@ -1,47 +1,30 @@
 ﻿#include "pch.h"
-#include "framework.h"
 #include "avialib.h"
-#include <string> 
 #include <iostream>
-#include <vector>
 using namespace std;
-/*
-* 
-* 
-*
-*
-*/
 namespace AviaLib {
-    Customer::Customer(string fio, int tel, string date, string adress) {
-        this->fio = fio;
-        this->tel = tel;
-        this->date = date;
-        this->adress = adress;
-    }
-    string Customer::GetFIO() {
+
+    // Customer class methods
+
+    Customer::Customer(string fio, int tel, string date, string adress)
+        : fio(fio), tel(tel), date(date), adress(adress) {}
+
+    string Customer::GetFIO() const {
         return fio;
     }
-    int Customer::GetTel() {
+
+    int Customer::GetTel() const {
         return tel;
     }
-    string Customer::GetDate() {
+
+    string Customer::GetDate() const {
         return date;
     }
-    string Customer::GetAdress() {
+
+    string Customer::GetAdress() const {
         return adress;
     }
-    void Customer::AddCustomerToDB(struct Avia_DataBase* db, Customer& new_cast) {
-        struct Customer customerToAdd(
-            new_cast.GetFIO(),
-            new_cast.GetTel(),
-            new_cast.GetDate(),
-            new_cast.GetAdress()
-        );
-        // Увеличиваем размер списка покупателей и добавляем нового покупателя
-        db->customer_count++;
-        db->customer_list = (struct Customer*)realloc(db->customer_list, db->customer_count * sizeof(struct Customer));
-        db->customer_list[db->customer_count - 1] = customerToAdd;
-    }
+
     Customer Customer::InputCustomer() {
         string fio;
         int tel;
@@ -54,62 +37,48 @@ namespace AviaLib {
         cout << "Введите телефон: ";
         cin >> tel;
 
+        cin.ignore(); // Clear the input buffer
+
         cout << "Введите дату: ";
-        cin.ignore(); // Очищаем буфер после ввода числа
         getline(cin, date);
 
         cout << "Введите адрес: ";
-        cin.ignore(); // Очищаем буфер после ввода числа
         getline(cin, address);
 
         return Customer(fio, tel, date, address);
     }
-    //-----------------------------------------------------------------------------------------
-    Order::Order(string company_name,static Ticket& ticketObj) {
-        this->company_name = company_name;
-        this->distributor = ticketObj.getDistributor();
-        this->price = ticketObj.getPrice();
-        this->ticket_id = ticketObj.getTicketID();
-    }
-    Order::Order(string company_name, string distributor, int price, int ticket_id) {
-        this->company_name = company_name;
-        this->distributor = distributor;
-        this->price = price;
-        this->ticket_id = ticket_id;
-    }
-    string Order::getCompany() {
+
+    // Order class methods
+
+    Order::Order(string company_name, const Ticket& ticketObj)
+        : company_name(company_name), distributor(ticketObj.getDistributor()), price(ticketObj.getPrice()), ticket_id(ticketObj.getTicketID()) {}
+
+    Order::Order(string company_name, string distributor, int price, int ticket_id)
+        : company_name(company_name), distributor(distributor), price(price), ticket_id(ticket_id) {}
+
+    string Order::getCompany() const {
         return company_name;
     }
 
-    string Order::getDistributor() {
+    string Order::getDistributor() const {
         return distributor;
     }
 
-    int Order::getPrice() {
+    int Order::getPrice() const {
         return price;
     }
 
-    int Order::getTicketID() {
+    int Order::getTicketID() const {
         return ticket_id;
     }
-    void Order::AddOrderToDB(struct Avia_DataBase* db, Order& new_order) {
-        // Выделяем память для нового заказа
-        struct Order new_order;
-        new_order.company_name = new_order.getCompany(); // Выделение памяти и копирование строки
-        new_order.distributor = new_order.getDistributor();
-        new_order.price = new_order.getPrice();
-        new_order.ticket_id = new_order.getTicketID();
 
-        // Увеличиваем размер списка заказов и добавляем новый заказ
-        db->order_count++;
-        db->order_list = (struct Order*)realloc(db->order_list, db->order_count * sizeof(struct Order));
-        db->order_list[db->order_count - 1] = new_order;
-    }
     Order Order::InputOrder() {
         string company_name;
         string distributor;
         int price;
         int ticket_id;
+
+        cin.ignore(); // Clear the input buffer
 
         cout << "Введите название компании: ";
         getline(cin, company_name);
@@ -123,61 +92,43 @@ namespace AviaLib {
         cout << "Введите номер билета: ";
         cin >> ticket_id;
 
-        cin.ignore(); // Очищаем буфер после ввода чисел
+        cin.ignore(); // Clear the input buffer
 
         return Order(company_name, distributor, price, ticket_id);
     }
-    //-----------------------------------------------------------------------------------------
-    Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio) {
-        this->depart = depart;
-        this->destination = destination;
-        this->distributor = distributor;
-        this->price = price;
-        this->ticket_id = ticket_id;
-        this->fio = fio;
-    }
-    Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, Customer& new_cust) {
-        this->depart = depart;
-        this->destination = destination;
-        this->distributor = distributor;
-        this->price = price;
-        this->ticket_id = ticket_id;
-        this->fio = new_cust.GetFIO();
-        }
-    string Ticket::getDepart() {
+
+    // Ticket class methods
+
+    Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio)
+        : depart(depart), destination(destination), distributor(distributor), price(price), ticket_id(ticket_id), fio(fio) {}
+
+    Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, const Customer& new_cust)
+        : depart(depart), destination(destination), distributor(distributor), price(price), ticket_id(ticket_id), fio(new_cust.GetFIO()) {}
+
+    string Ticket::getDepart() const {
         return depart;
     }
-    string Ticket::getDestination() {
+
+    string Ticket::getDestination() const {
         return destination;
     }
-    string Ticket::getDistributor() {
+
+    string Ticket::getDistributor() const {
         return distributor;
     }
-    int Ticket::getPrice() {
+
+    int Ticket::getPrice() const {
         return price;
     }
-    int Ticket::getTicketID() {
+
+    int Ticket::getTicketID() const {
         return ticket_id;
     }
-    string Ticket::getFIO() {
+
+    string Ticket::getFIO() const {
         return fio;
     }
-    void Ticket::AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket) {
-        // Выделяем память для нового билета
-        // Заполняем новый билет данными из параметра new_ticket
-        struct Ticket ticketToAdd(
-            new_ticket.getDepart(),
-            new_ticket.getDestination(),
-            new_ticket.getDistributor(),
-            new_ticket.getPrice(),
-            new_ticket.getTicketID(),
-            new_ticket.getFIO()
-        );
-        // Увеличиваем размер списка билетов и добавляем новый билет
-        db->ticket_count++;
-        db->ticket_list = (struct Ticket*)realloc(db->ticket_list, db->ticket_count * sizeof(struct Ticket));
-        db->ticket_list[db->ticket_count - 1] = ticketToAdd;
-    }
+
     Ticket Ticket::InputTicket() {
         string depart;
         string destination;
@@ -185,6 +136,8 @@ namespace AviaLib {
         int price;
         int ticket_id;
         string fio;
+
+        cin.ignore(); // Clear the input buffer
 
         cout << "Введите место отправления: ";
         getline(cin, depart);
@@ -201,57 +154,45 @@ namespace AviaLib {
         cout << "Введите номер билета: ";
         cin >> ticket_id;
 
-        cin.ignore(); // Очищаем буфер после ввода чисел
+        cin.ignore(); // Clear the input buffer
 
         cout << "Введите ФИО: ";
         getline(cin, fio);
 
         return Ticket(depart, destination, distributor, price, ticket_id, fio);
     }
-    //-----------------------------------------------------------------------------------------
-    Operation::Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust) {
-        this->ticket_operation = ticket_operation;
-        this->operation_date = operation_date;
-        this->tel = new_cust.GetTel();
-        this->ticket_id = new_ticket.getTicketID();
-    }
-    Operation::Operation(string ticket_operation, string operation_date, int tel, int ticketID) {
-        this->ticket_operation = ticket_operation;
-        this->operation_date = operation_date;
-        this->tel = tel;
-        this->ticket_id = ticketID;
-    }
-    string Operation::getOperation() {
+
+    // Operation class methods
+
+    Operation::Operation(string ticket_operation, string operation_date, int tel, int ticketID)
+        : ticket_operation(ticket_operation), operation_date(operation_date), tel(tel), ticket_id(ticketID) {}
+
+    Operation::Operation(string ticket_operation, string operation_date, const Ticket& new_ticket, const Customer& new_cust)
+        : ticket_operation(ticket_operation), operation_date(operation_date), tel(new_cust.GetTel()), ticket_id(new_ticket.getTicketID()) {}
+
+    string Operation::getOperation() const {
         return ticket_operation;
     }
-    string Operation::getOperationDate() {
+
+    string Operation::getOperationDate() const {
         return operation_date;
     }
-    int Operation::getTicketID() {
+
+    int Operation::getTicketID() const {
         return ticket_id;
     }
-    int Operation::getTel() {
+
+    int Operation::getTel() const {
         return tel;
     }
-    void Operation::AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op) {
-        // Выделяем память для нового билета
-        // Заполняем новый билет данными из параметра new_ticket
-        struct Operation opToAdd(
-            new_op.getOperation(),
-            new_op.getOperationDate(),
-            new_op.getTicketID(),
-            new_op.getTel()
-        );
-        // Увеличиваем размер списка билетов и добавляем новый билет
-        db->operation_count++;
-        db->operation_list = (struct Operation*)realloc(db->operation_list, db->operation_count * sizeof(struct Operation));
-        db->operation_list[db->operation_count - 1] = opToAdd;
-    }
+
     Operation Operation::InputOperation() {
         string ticket_operation;
         string operation_date;
         int ticket_id;
         int tel;
+
+        cin.ignore(); // Clear the input buffer
 
         cout << "Введите тип операции (выдача билета или возврат билета): ";
         getline(cin, ticket_operation);
@@ -265,47 +206,72 @@ namespace AviaLib {
         cout << "Введите номер телефона: ";
         cin >> tel;
 
-        cin.ignore(); // Очищаем буфер после ввода чисел
+        cin.ignore(); // Clear the input buffer
 
         return Operation(ticket_operation, operation_date, ticket_id, tel);
     }
-    //-----------------------------------------------------------------------------------------
-    struct Avia_DataBase* Avia_DataBase::createAviaDataBase() {
-        struct Avia_DataBase* db = (struct Avia_DataBase*)malloc(sizeof(struct Avia_DataBase));
-        if (db == NULL) {
-            return NULL; // Ошибка выделения памяти
-        }
 
-        // Инициализируем списки как пустые
-        db->order_list = NULL;
-        db->customer_list = NULL;
-        db->operation_list = NULL;
-        db->ticket_list = NULL;
-        db->order_count = 0;
-        db->customer_count = 0;
-        db->operation_count = 0;
-        db->ticket_count = 0;
+    // Avia_DataBase class methods
 
-        return db;
+    Avia_DataBase::Avia_DataBase()
+        : order_list(nullptr), customer_list(nullptr), operation_list(nullptr), ticket_list(nullptr),
+        order_count(0), customer_count(0), operation_count(0), ticket_count(0) {}
+
+    Avia_DataBase::~Avia_DataBase() {
+        delete[] order_list;
+        delete[] customer_list;
+        delete[] operation_list;
+        delete[] ticket_list;
     }
-    void Avia_DataBase::destroyAviaDataBase(struct Avia_DataBase* db) {
-        if (db == NULL) {
-            return;
+
+    void Avia_DataBase::AddCustomerToDB(const Customer& new_cast) {
+        Customer* new_customer_list = new Customer[customer_count + 1];
+        for (size_t i = 0; i < customer_count; ++i) {
+            new_customer_list[i] = customer_list[i];
         }
-
-        // Освобождаем память для списков и их элементов
-        free(db->order_list);
-        free(db->customer_list);
-        free(db->operation_list);
-        free(db->ticket_list);
-
-        // Освобождаем память для самой базы данных
-        free(db);
+        new_customer_list[customer_count] = new_cast;
+        delete[] customer_list;
+        customer_list = new_customer_list;
+        customer_count++;
     }
-    void Avia_DataBase::PrintCustomerList() {
+
+    void Avia_DataBase::AddOrderToDB(const Order& new_order) {
+        Order* new_order_list = new Order[order_count + 1];
+        for (size_t i = 0; i < order_count; ++i) {
+            new_order_list[i] = order_list[i];
+        }
+        new_order_list[order_count] = new_order;
+        delete[] order_list;
+        order_list = new_order_list;
+        order_count++;
+    }
+
+    void Avia_DataBase::AddTicketToDB(const Ticket& new_ticket) {
+        Ticket* new_ticket_list = new Ticket[ticket_count + 1];
+        for (size_t i = 0; i < ticket_count; ++i) {
+            new_ticket_list[i] = ticket_list[i];
+        }
+        new_ticket_list[ticket_count] = new_ticket;
+        delete[] ticket_list;
+        ticket_list = new_ticket_list;
+        ticket_count++;
+    }
+
+    void Avia_DataBase::AddOperationToDB(const Operation& new_op) {
+        Operation* new_operation_list = new Operation[operation_count + 1];
+        for (size_t i = 0; i < operation_count; ++i) {
+            new_operation_list[i] = operation_list[i];
+        }
+        new_operation_list[operation_count] = new_op;
+        delete[] operation_list;
+        operation_list = new_operation_list;
+        operation_count++;
+    }
+
+    void Avia_DataBase::PrintCustomerList() const {
         if (customer_count > 0) {
-                cout << "            Список покупателей" << endl;
-                cout << "-----------------------------------------" << endl;
+            cout << "            Список покупателей" << endl;
+            cout << "-----------------------------------------" << endl;
             for (size_t i = 0; i < customer_count; ++i) {
                 cout << "ФИО: " << customer_list[i].GetFIO() << endl;
                 cout << "Телефон: " << customer_list[i].GetTel() << endl;
@@ -316,10 +282,11 @@ namespace AviaLib {
         }
         else cout << "Список покупателей пуст..." << endl;
     }
-    void Avia_DataBase::PrintTicketList() {
+
+    void Avia_DataBase::PrintTicketList() const {
         if (ticket_count > 0) {
-                cout << "            Список билетов" << endl;
-                cout << "-----------------------------------------" << endl;
+            cout << "            Список билетов" << endl;
+            cout << "-----------------------------------------" << endl;
             for (size_t i = 0; i < ticket_count; ++i) {
                 cout << "Билет #" << i + 1 << endl;
                 cout << "Отправление: " << ticket_list[i].getDepart() << endl;
@@ -331,13 +298,13 @@ namespace AviaLib {
                 cout << "-----------------------------------------" << endl;
             }
         }
-        else cout << "Список билетов пуст...";
+        else cout << "Список билетов пуст..." << endl;
     }
 
-    void Avia_DataBase::PrintOrderList() {
+    void Avia_DataBase::PrintOrderList() const {
         if (order_count > 0) {
-                cout << "              Список Заказов" << endl;
-                cout << "-----------------------------------------" << endl;
+            cout << "              Список Заказов" << endl;
+            cout << "-----------------------------------------" << endl;
             for (size_t i = 0; i < order_count; ++i) {
                 cout << "Заказ #" << i + 1 << endl;
                 cout << "Название компании: " << order_list[i].getCompany() << endl;
@@ -350,7 +317,7 @@ namespace AviaLib {
         else cout << "Список заказов пуст..." << endl;
     }
 
-    void Avia_DataBase::PrintOperationList() {
+    void Avia_DataBase::PrintOperationList() const {
         if (operation_count > 0) {
             cout << "              Список операций" << endl;
             cout << "-----------------------------------------" << endl;
