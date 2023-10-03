@@ -98,5 +98,14 @@ public:
          struct Avia_DataBase* createAviaDataBase();
          // Функция для освобождения памяти базы данных
          void destroyAviaDataBase(struct Avia_DataBase* db);
+         void PrintCustomerList();
+         void PrintTicketList();
+         void PrintOrderList();
+         void PrintOperationList();
     };
 }
+
+using Customer = AviaLib::Customer;
+using Order = AviaLib::Order;
+using Ticket = AviaLib::Ticket;
+using Avia_DataBase = AviaLib::Avia_DataBase;

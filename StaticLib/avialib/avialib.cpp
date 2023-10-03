@@ -3,9 +3,11 @@
 #include "avialib.h"
 #include <string> 
 #include <iostream>
+#include <vector>
+using namespace std;
 /*
-* Уже решаю проблему описанную в имейле
-* конструкторы и деструкторы уже прописаны
+* 
+* 
 *
 *
 */
@@ -40,7 +42,7 @@ namespace AviaLib {
         db->customer_list = (struct Customer*)realloc(db->customer_list, db->customer_count * sizeof(struct Customer));
         db->customer_list[db->customer_count - 1] = customerToAdd;
     }
-    Customer InputCustomer() {
+    Customer Customer::InputCustomer() {
         string fio;
         int tel;
         string date;
@@ -299,5 +301,68 @@ namespace AviaLib {
 
         // Освобождаем память для самой базы данных
         free(db);
+    }
+    void Avia_DataBase::PrintCustomerList() {
+        if (customer_count > 0) {
+                cout << "            Список покупателей" << endl;
+                cout << "-----------------------------------------" << endl;
+            for (size_t i = 0; i < customer_count; ++i) {
+                cout << "ФИО: " << customer_list[i].GetFIO() << endl;
+                cout << "Телефон: " << customer_list[i].GetTel() << endl;
+                cout << "Дата: " << customer_list[i].GetDate() << endl;
+                cout << "Адрес: " << customer_list[i].GetAdress() << endl;
+                cout << "-----------------------------------------" << endl;
+            }
+        }
+        else cout << "Список покупателей пуст..." << endl;
+    }
+    void Avia_DataBase::PrintTicketList() {
+        if (ticket_count > 0) {
+                cout << "            Список билетов" << endl;
+                cout << "-----------------------------------------" << endl;
+            for (size_t i = 0; i < ticket_count; ++i) {
+                cout << "Билет #" << i + 1 << endl;
+                cout << "Отправление: " << ticket_list[i].getDepart() << endl;
+                cout << "Прибытие: " << ticket_list[i].getDestination() << endl;
+                cout << "Дистрибьютор: " << ticket_list[i].getDistributor() << endl;
+                cout << "Цена: " << ticket_list[i].getPrice() << endl;
+                cout << "ID билета: " << ticket_list[i].getTicketID() << endl;
+                cout << "ФИО: " << ticket_list[i].getFIO() << endl;
+                cout << "-----------------------------------------" << endl;
+            }
+        }
+        else cout << "Список билетов пуст...";
+    }
+
+    void Avia_DataBase::PrintOrderList() {
+        if (order_count > 0) {
+                cout << "              Список Заказов" << endl;
+                cout << "-----------------------------------------" << endl;
+            for (size_t i = 0; i < order_count; ++i) {
+                cout << "Заказ #" << i + 1 << endl;
+                cout << "Название компании: " << order_list[i].getCompany() << endl;
+                cout << "Дистрибьютор: " << order_list[i].getDistributor() << endl;
+                cout << "Цена: " << order_list[i].getPrice() << endl;
+                cout << "ID билета: " << order_list[i].getTicketID() << endl;
+                cout << "-----------------------------------------" << endl;
+            }
+        }
+        else cout << "Список заказов пуст..." << endl;
+    }
+
+    void Avia_DataBase::PrintOperationList() {
+        if (operation_count > 0) {
+            cout << "              Список операций" << endl;
+            cout << "-----------------------------------------" << endl;
+            for (size_t i = 0; i < operation_count; ++i) {
+                cout << "Операция #" << i + 1 << endl;
+                cout << "Тип операции: " << operation_list[i].getOperation() << endl;
+                cout << "Дата операции: " << operation_list[i].getOperationDate() << endl;
+                cout << "ID билета: " << operation_list[i].getTicketID() << endl;
+                cout << "Телефон: " << operation_list[i].getTel() << endl;
+                cout << "-----------------------------------------" << endl;
+            }
+        }
+        else cout << "Список операций пуст..." << endl;
     }
 }
