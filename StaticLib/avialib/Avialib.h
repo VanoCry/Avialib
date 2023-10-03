@@ -1,12 +1,8 @@
 #pragma once
 #include <vector>
+#include <string> 
 using namespace std;
-/*
-* Уже решаю проблему описанную в имейле
-* конструкторы и деструкторы уже прописаны
-* Сначала создаётся класс покупателя, потом билета, затем
-* Заказа а за ним класс операции
-*/
+
 namespace AviaLib {
     //-----------------------------------------------------------------------------------------
     class Customer {
@@ -34,7 +30,6 @@ namespace AviaLib {
         int ticket_id;
     public:
         Order();
-        Order(string company_name,static Ticket& ticketObj);
         Order(string company_name, string distributor, int price, int ticket_id);
         string getCompany();
         string getDistributor();
@@ -66,42 +61,42 @@ namespace AviaLib {
         Ticket InputTicket();
     };
     //-----------------------------------------------------------------------------------------
-     class Operation {
-private:
-    string ticket_operation; // "выдача билета" или "возврат билета"
-    string operation_date;
-    int ticket_id;
-    int tel;
-public:
-    Operation();
-    Operation(string ticket_operation, string operation_date, int tel, int ticketID);
-    Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust);
-    string getOperation();
-    string getOperationDate();
-    int getTicketID();
-    int getTel();
-    void AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op);
-    Operation InputOperation();
-};
+    class Operation {
+    private:
+        string ticket_operation; // "выдача билета" или "возврат билета"
+        string operation_date;
+        int ticket_id;
+        int tel;
+    public:
+        Operation();
+        Operation(string ticket_operation, string operation_date, int tel, int ticketID);
+        Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust);
+        string getOperation();
+        string getOperationDate();
+        int getTicketID();
+        int getTel();
+        void AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op);
+        Operation InputOperation();
+    };
     //-----------------------------------------------------------------------------------------
-     class Avia_DataBase {
-     public:
-         struct Order* order_list;
-         struct Customer* customer_list;
-         struct Operation* operation_list;
-         struct Ticket* ticket_list;
-         size_t order_count;
-         size_t customer_count;
-         size_t operation_count;
-         size_t ticket_count;
-     public:
-         struct Avia_DataBase* createAviaDataBase();
-         // Функция для освобождения памяти базы данных
-         void destroyAviaDataBase(struct Avia_DataBase* db);
-         void PrintCustomerList();
-         void PrintTicketList();
-         void PrintOrderList();
-         void PrintOperationList();
+    class Avia_DataBase {
+    public:
+        struct Order* order_list;
+        struct Customer* customer_list;
+        struct Operation* operation_list;
+        struct Ticket* ticket_list;
+        size_t order_count;
+        size_t customer_count;
+        size_t operation_count;
+        size_t ticket_count;
+    public:
+        struct Avia_DataBase* createAviaDataBase();
+        // Функция для освобождения памяти базы данных
+        void destroyAviaDataBase(struct Avia_DataBase* db);
+        void PrintCustomerList();
+        void PrintTicketList();
+        void PrintOrderList();
+        void PrintOperationList();
     };
 }
 

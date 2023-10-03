@@ -1,13 +1,11 @@
-п»ї#include "pch.h"
-#include "framework.h"
 #include "avialib.h"
 #include <string> 
 #include <iostream>
 #include <vector>
 using namespace std;
 /*
-* 
-* 
+*
+*
 *
 *
 */
@@ -37,7 +35,7 @@ namespace AviaLib {
             new_cast.GetDate(),
             new_cast.GetAdress()
         );
-        // РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ СЃРїРёСЃРєР° РїРѕРєСѓРїР°С‚РµР»РµР№ Рё РґРѕР±Р°РІР»СЏРµРј РЅРѕРІРѕРіРѕ РїРѕРєСѓРїР°С‚РµР»СЏ
+        // Увеличиваем размер списка покупателей и добавляем нового покупателя
         db->customer_count++;
         db->customer_list = (struct Customer*)realloc(db->customer_list, db->customer_count * sizeof(struct Customer));
         db->customer_list[db->customer_count - 1] = customerToAdd;
@@ -48,29 +46,23 @@ namespace AviaLib {
         string date;
         string address;
 
-        cout << "Р’РІРµРґРёС‚Рµ Р¤РРћ: ";
+        cout << "Введите ФИО: ";
         getline(cin, fio);
 
-        cout << "Р’РІРµРґРёС‚Рµ С‚РµР»РµС„РѕРЅ: ";
+        cout << "Введите телефон: ";
         cin >> tel;
 
-        cout << "Р’РІРµРґРёС‚Рµ РґР°С‚Сѓ: ";
-        cin.ignore(); // РћС‡РёС‰Р°РµРј Р±СѓС„РµСЂ РїРѕСЃР»Рµ РІРІРѕРґР° С‡РёСЃР»Р°
+        cout << "Введите дату: ";
+        cin.ignore(); // Очищаем буфер после ввода числа
         getline(cin, date);
 
-        cout << "Р’РІРµРґРёС‚Рµ Р°РґСЂРµСЃ: ";
-        cin.ignore(); // РћС‡РёС‰Р°РµРј Р±СѓС„РµСЂ РїРѕСЃР»Рµ РІРІРѕРґР° С‡РёСЃР»Р°
+        cout << "Введите адрес: ";
+        cin.ignore(); // Очищаем буфер после ввода числа
         getline(cin, address);
 
         return Customer(fio, tel, date, address);
     }
     //-----------------------------------------------------------------------------------------
-    Order::Order(string company_name,static Ticket& ticketObj) {
-        this->company_name = company_name;
-        this->distributor = ticketObj.getDistributor();
-        this->price = ticketObj.getPrice();
-        this->ticket_id = ticketObj.getTicketID();
-    }
     Order::Order(string company_name, string distributor, int price, int ticket_id) {
         this->company_name = company_name;
         this->distributor = distributor;
@@ -93,14 +85,13 @@ namespace AviaLib {
         return ticket_id;
     }
     void Order::AddOrderToDB(struct Avia_DataBase* db, Order& new_order) {
-        // Р’С‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РґР»СЏ РЅРѕРІРѕРіРѕ Р·Р°РєР°Р·Р°
-        struct Order new_order;
-        new_order.company_name = new_order.getCompany(); // Р’С‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё Рё РєРѕРїРёСЂРѕРІР°РЅРёРµ СЃС‚СЂРѕРєРё
+        // Выделяем память для нового заказа
+        new_order.company_name = new_order.getCompany(); // Выделение памяти и копирование строки
         new_order.distributor = new_order.getDistributor();
         new_order.price = new_order.getPrice();
         new_order.ticket_id = new_order.getTicketID();
 
-        // РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ СЃРїРёСЃРєР° Р·Р°РєР°Р·РѕРІ Рё РґРѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ Р·Р°РєР°Р·
+        // Увеличиваем размер списка заказов и добавляем новый заказ
         db->order_count++;
         db->order_list = (struct Order*)realloc(db->order_list, db->order_count * sizeof(struct Order));
         db->order_list[db->order_count - 1] = new_order;
@@ -111,19 +102,19 @@ namespace AviaLib {
         int price;
         int ticket_id;
 
-        cout << "Р’РІРµРґРёС‚Рµ РЅР°Р·РІР°РЅРёРµ РєРѕРјРїР°РЅРёРё: ";
+        cout << "Введите название компании: ";
         getline(cin, company_name);
 
-        cout << "Р’РІРµРґРёС‚Рµ РґРёСЃС‚СЂРёР±СЊСЋС‚РѕСЂР°: ";
+        cout << "Введите дистрибьютора: ";
         getline(cin, distributor);
 
-        cout << "Р’РІРµРґРёС‚Рµ С†РµРЅСѓ: ";
+        cout << "Введите цену: ";
         cin >> price;
 
-        cout << "Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ Р±РёР»РµС‚Р°: ";
+        cout << "Введите номер билета: ";
         cin >> ticket_id;
 
-        cin.ignore(); // РћС‡РёС‰Р°РµРј Р±СѓС„РµСЂ РїРѕСЃР»Рµ РІРІРѕРґР° С‡РёСЃРµР»
+        cin.ignore(); // Очищаем буфер после ввода чисел
 
         return Order(company_name, distributor, price, ticket_id);
     }
@@ -143,7 +134,7 @@ namespace AviaLib {
         this->price = price;
         this->ticket_id = ticket_id;
         this->fio = new_cust.GetFIO();
-        }
+    }
     string Ticket::getDepart() {
         return depart;
     }
@@ -163,8 +154,8 @@ namespace AviaLib {
         return fio;
     }
     void Ticket::AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket) {
-        // Р’С‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РґР»СЏ РЅРѕРІРѕРіРѕ Р±РёР»РµС‚Р°
-        // Р—Р°РїРѕР»РЅСЏРµРј РЅРѕРІС‹Р№ Р±РёР»РµС‚ РґР°РЅРЅС‹РјРё РёР· РїР°СЂР°РјРµС‚СЂР° new_ticket
+        // Выделяем память для нового билета
+        // Заполняем новый билет данными из параметра new_ticket
         struct Ticket ticketToAdd(
             new_ticket.getDepart(),
             new_ticket.getDestination(),
@@ -173,7 +164,7 @@ namespace AviaLib {
             new_ticket.getTicketID(),
             new_ticket.getFIO()
         );
-        // РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ СЃРїРёСЃРєР° Р±РёР»РµС‚РѕРІ Рё РґРѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ Р±РёР»РµС‚
+        // Увеличиваем размер списка билетов и добавляем новый билет
         db->ticket_count++;
         db->ticket_list = (struct Ticket*)realloc(db->ticket_list, db->ticket_count * sizeof(struct Ticket));
         db->ticket_list[db->ticket_count - 1] = ticketToAdd;
@@ -186,24 +177,24 @@ namespace AviaLib {
         int ticket_id;
         string fio;
 
-        cout << "Р’РІРµРґРёС‚Рµ РјРµСЃС‚Рѕ РѕС‚РїСЂР°РІР»РµРЅРёСЏ: ";
+        cout << "Введите место отправления: ";
         getline(cin, depart);
 
-        cout << "Р’РІРµРґРёС‚Рµ РјРµСЃС‚Рѕ РЅР°Р·РЅР°С‡РµРЅРёСЏ: ";
+        cout << "Введите место назначения: ";
         getline(cin, destination);
 
-        cout << "Р’РІРµРґРёС‚Рµ РґРёСЃС‚СЂРёР±СЊСЋС‚РѕСЂР°: ";
+        cout << "Введите дистрибьютора: ";
         getline(cin, distributor);
 
-        cout << "Р’РІРµРґРёС‚Рµ С†РµРЅСѓ: ";
+        cout << "Введите цену: ";
         cin >> price;
 
-        cout << "Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ Р±РёР»РµС‚Р°: ";
+        cout << "Введите номер билета: ";
         cin >> ticket_id;
 
-        cin.ignore(); // РћС‡РёС‰Р°РµРј Р±СѓС„РµСЂ РїРѕСЃР»Рµ РІРІРѕРґР° С‡РёСЃРµР»
+        cin.ignore(); // Очищаем буфер после ввода чисел
 
-        cout << "Р’РІРµРґРёС‚Рµ Р¤РРћ: ";
+        cout << "Введите ФИО: ";
         getline(cin, fio);
 
         return Ticket(depart, destination, distributor, price, ticket_id, fio);
@@ -234,15 +225,15 @@ namespace AviaLib {
         return tel;
     }
     void Operation::AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op) {
-        // Р’С‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РґР»СЏ РЅРѕРІРѕРіРѕ Р±РёР»РµС‚Р°
-        // Р—Р°РїРѕР»РЅСЏРµРј РЅРѕРІС‹Р№ Р±РёР»РµС‚ РґР°РЅРЅС‹РјРё РёР· РїР°СЂР°РјРµС‚СЂР° new_ticket
+        // Выделяем память для нового билета
+        // Заполняем новый билет данными из параметра new_ticket
         struct Operation opToAdd(
             new_op.getOperation(),
             new_op.getOperationDate(),
             new_op.getTicketID(),
             new_op.getTel()
         );
-        // РЈРІРµР»РёС‡РёРІР°РµРј СЂР°Р·РјРµСЂ СЃРїРёСЃРєР° Р±РёР»РµС‚РѕРІ Рё РґРѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№ Р±РёР»РµС‚
+        // Увеличиваем размер списка билетов и добавляем новый билет
         db->operation_count++;
         db->operation_list = (struct Operation*)realloc(db->operation_list, db->operation_count * sizeof(struct Operation));
         db->operation_list[db->operation_count - 1] = opToAdd;
@@ -253,19 +244,19 @@ namespace AviaLib {
         int ticket_id;
         int tel;
 
-        cout << "Р’РІРµРґРёС‚Рµ С‚РёРї РѕРїРµСЂР°С†РёРё (РІС‹РґР°С‡Р° Р±РёР»РµС‚Р° РёР»Рё РІРѕР·РІСЂР°С‚ Р±РёР»РµС‚Р°): ";
+        cout << "Введите тип операции (выдача билета или возврат билета): ";
         getline(cin, ticket_operation);
 
-        cout << "Р’РІРµРґРёС‚Рµ РґР°С‚Сѓ РѕРїРµСЂР°С†РёРё: ";
+        cout << "Введите дату операции: ";
         getline(cin, operation_date);
 
-        cout << "Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ Р±РёР»РµС‚Р°: ";
+        cout << "Введите номер билета: ";
         cin >> ticket_id;
 
-        cout << "Р’РІРµРґРёС‚Рµ РЅРѕРјРµСЂ С‚РµР»РµС„РѕРЅР°: ";
+        cout << "Введите номер телефона: ";
         cin >> tel;
 
-        cin.ignore(); // РћС‡РёС‰Р°РµРј Р±СѓС„РµСЂ РїРѕСЃР»Рµ РІРІРѕРґР° С‡РёСЃРµР»
+        cin.ignore(); // Очищаем буфер после ввода чисел
 
         return Operation(ticket_operation, operation_date, ticket_id, tel);
     }
@@ -273,10 +264,10 @@ namespace AviaLib {
     struct Avia_DataBase* Avia_DataBase::createAviaDataBase() {
         struct Avia_DataBase* db = (struct Avia_DataBase*)malloc(sizeof(struct Avia_DataBase));
         if (db == NULL) {
-            return NULL; // РћС€РёР±РєР° РІС‹РґРµР»РµРЅРёСЏ РїР°РјСЏС‚Рё
+            return NULL; // Ошибка выделения памяти
         }
 
-        // РРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј СЃРїРёСЃРєРё РєР°Рє РїСѓСЃС‚С‹Рµ
+        // Инициализируем списки как пустые
         db->order_list = NULL;
         db->customer_list = NULL;
         db->operation_list = NULL;
@@ -293,76 +284,76 @@ namespace AviaLib {
             return;
         }
 
-        // РћСЃРІРѕР±РѕР¶РґР°РµРј РїР°РјСЏС‚СЊ РґР»СЏ СЃРїРёСЃРєРѕРІ Рё РёС… СЌР»РµРјРµРЅС‚РѕРІ
+        // Освобождаем память для списков и их элементов
         free(db->order_list);
         free(db->customer_list);
         free(db->operation_list);
         free(db->ticket_list);
 
-        // РћСЃРІРѕР±РѕР¶РґР°РµРј РїР°РјСЏС‚СЊ РґР»СЏ СЃР°РјРѕР№ Р±Р°Р·С‹ РґР°РЅРЅС‹С…
+        // Освобождаем память для самой базы данных
         free(db);
     }
     void Avia_DataBase::PrintCustomerList() {
         if (customer_count > 0) {
-                cout << "            РЎРїРёСЃРѕРє РїРѕРєСѓРїР°С‚РµР»РµР№" << endl;
-                cout << "-----------------------------------------" << endl;
+            cout << "            Список покупателей" << endl;
+            cout << "-----------------------------------------" << endl;
             for (size_t i = 0; i < customer_count; ++i) {
-                cout << "Р¤РРћ: " << customer_list[i].GetFIO() << endl;
-                cout << "РўРµР»РµС„РѕРЅ: " << customer_list[i].GetTel() << endl;
-                cout << "Р”Р°С‚Р°: " << customer_list[i].GetDate() << endl;
-                cout << "РђРґСЂРµСЃ: " << customer_list[i].GetAdress() << endl;
+                cout << "ФИО: " << customer_list[i].GetFIO() << endl;
+                cout << "Телефон: " << customer_list[i].GetTel() << endl;
+                cout << "Дата: " << customer_list[i].GetDate() << endl;
+                cout << "Адрес: " << customer_list[i].GetAdress() << endl;
                 cout << "-----------------------------------------" << endl;
             }
         }
-        else cout << "РЎРїРёСЃРѕРє РїРѕРєСѓРїР°С‚РµР»РµР№ РїСѓСЃС‚..." << endl;
+        else cout << "Список покупателей пуст..." << endl;
     }
     void Avia_DataBase::PrintTicketList() {
         if (ticket_count > 0) {
-                cout << "            РЎРїРёСЃРѕРє Р±РёР»РµС‚РѕРІ" << endl;
-                cout << "-----------------------------------------" << endl;
+            cout << "            Список билетов" << endl;
+            cout << "-----------------------------------------" << endl;
             for (size_t i = 0; i < ticket_count; ++i) {
-                cout << "Р‘РёР»РµС‚ #" << i + 1 << endl;
-                cout << "РћС‚РїСЂР°РІР»РµРЅРёРµ: " << ticket_list[i].getDepart() << endl;
-                cout << "РџСЂРёР±С‹С‚РёРµ: " << ticket_list[i].getDestination() << endl;
-                cout << "Р”РёСЃС‚СЂРёР±СЊСЋС‚РѕСЂ: " << ticket_list[i].getDistributor() << endl;
-                cout << "Р¦РµРЅР°: " << ticket_list[i].getPrice() << endl;
-                cout << "ID Р±РёР»РµС‚Р°: " << ticket_list[i].getTicketID() << endl;
-                cout << "Р¤РРћ: " << ticket_list[i].getFIO() << endl;
+                cout << "Билет #" << i + 1 << endl;
+                cout << "Отправление: " << ticket_list[i].getDepart() << endl;
+                cout << "Прибытие: " << ticket_list[i].getDestination() << endl;
+                cout << "Дистрибьютор: " << ticket_list[i].getDistributor() << endl;
+                cout << "Цена: " << ticket_list[i].getPrice() << endl;
+                cout << "ID билета: " << ticket_list[i].getTicketID() << endl;
+                cout << "ФИО: " << ticket_list[i].getFIO() << endl;
                 cout << "-----------------------------------------" << endl;
             }
         }
-        else cout << "РЎРїРёСЃРѕРє Р±РёР»РµС‚РѕРІ РїСѓСЃС‚...";
+        else cout << "Список билетов пуст...";
     }
 
     void Avia_DataBase::PrintOrderList() {
         if (order_count > 0) {
-                cout << "              РЎРїРёСЃРѕРє Р—Р°РєР°Р·РѕРІ" << endl;
-                cout << "-----------------------------------------" << endl;
+            cout << "              Список Заказов" << endl;
+            cout << "-----------------------------------------" << endl;
             for (size_t i = 0; i < order_count; ++i) {
-                cout << "Р—Р°РєР°Р· #" << i + 1 << endl;
-                cout << "РќР°Р·РІР°РЅРёРµ РєРѕРјРїР°РЅРёРё: " << order_list[i].getCompany() << endl;
-                cout << "Р”РёСЃС‚СЂРёР±СЊСЋС‚РѕСЂ: " << order_list[i].getDistributor() << endl;
-                cout << "Р¦РµРЅР°: " << order_list[i].getPrice() << endl;
-                cout << "ID Р±РёР»РµС‚Р°: " << order_list[i].getTicketID() << endl;
+                cout << "Заказ #" << i + 1 << endl;
+                cout << "Название компании: " << order_list[i].getCompany() << endl;
+                cout << "Дистрибьютор: " << order_list[i].getDistributor() << endl;
+                cout << "Цена: " << order_list[i].getPrice() << endl;
+                cout << "ID билета: " << order_list[i].getTicketID() << endl;
                 cout << "-----------------------------------------" << endl;
             }
         }
-        else cout << "РЎРїРёСЃРѕРє Р·Р°РєР°Р·РѕРІ РїСѓСЃС‚..." << endl;
+        else cout << "Список заказов пуст..." << endl;
     }
 
     void Avia_DataBase::PrintOperationList() {
         if (operation_count > 0) {
-            cout << "              РЎРїРёСЃРѕРє РѕРїРµСЂР°С†РёР№" << endl;
+            cout << "              Список операций" << endl;
             cout << "-----------------------------------------" << endl;
             for (size_t i = 0; i < operation_count; ++i) {
-                cout << "РћРїРµСЂР°С†РёСЏ #" << i + 1 << endl;
-                cout << "РўРёРї РѕРїРµСЂР°С†РёРё: " << operation_list[i].getOperation() << endl;
-                cout << "Р”Р°С‚Р° РѕРїРµСЂР°С†РёРё: " << operation_list[i].getOperationDate() << endl;
-                cout << "ID Р±РёР»РµС‚Р°: " << operation_list[i].getTicketID() << endl;
-                cout << "РўРµР»РµС„РѕРЅ: " << operation_list[i].getTel() << endl;
+                cout << "Операция #" << i + 1 << endl;
+                cout << "Тип операции: " << operation_list[i].getOperation() << endl;
+                cout << "Дата операции: " << operation_list[i].getOperationDate() << endl;
+                cout << "ID билета: " << operation_list[i].getTicketID() << endl;
+                cout << "Телефон: " << operation_list[i].getTel() << endl;
                 cout << "-----------------------------------------" << endl;
             }
         }
-        else cout << "РЎРїРёСЃРѕРє РѕРїРµСЂР°С†РёР№ РїСѓСЃС‚..." << endl;
+        else cout << "Список операций пуст..." << endl;
     }
 }
