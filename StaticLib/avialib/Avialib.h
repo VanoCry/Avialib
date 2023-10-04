@@ -1,106 +1,102 @@
 #pragma once
+#include <string>
 #include <vector>
-#include <string> 
-using namespace std;
 
 namespace AviaLib {
-    //-----------------------------------------------------------------------------------------
+
     class Customer {
     private:
-        string fio;
+        std::string fio;
         int tel;
-        string date;
-        string adress;
+        std::string date;
+        std::string address;
+
     public:
-        Customer();
-        Customer(string fio, int tel, string date, string adress);
-        string GetFIO();
-        int GetTel();
-        string GetDate();
-        string GetAdress();
-        void AddCustomerToDB(struct Avia_DataBase* db, Customer& new_cast);
-        Customer InputCustomer();
+        Customer(const std::string& fio, int tel, const std::string& date, const std::string& address);
+        std::string GetFIO() const;
+        int GetTel() const;
+        std::string GetDate() const;
+        std::string GetAddress() const;
     };
-    //-----------------------------------------------------------------------------------------
+
     class Order {
     private:
-        string company_name;
-        string distributor;
+        std::string company_name;
+        std::string distributor;
         int price;
         int ticket_id;
+
     public:
-        Order();
-        Order(string company_name, string distributor, int price, int ticket_id);
-        string getCompany();
-        string getDistributor();
-        int getPrice();
-        int getTicketID();
-        void AddOrderToDB(struct Avia_DataBase* db, Order& new_order);
-        Order InputOrder();
+        Order(const std::string& company_name, const std::string& distributor, int price, int ticket_id);
+        std::string GetCompany() const;
+        std::string GetDistributor() const;
+        int GetPrice() const;
+        int GetTicketID() const;
     };
-    //-----------------------------------------------------------------------------------------
+
     class Ticket {
     private:
-        string depart;
-        string destination;
-        string distributor;
+        std::string depart;
+        std::string destination;
+        std::string distributor;
         int price;
         int ticket_id;
-        string fio;
+        std::string fio;
+
     public:
-        Ticket();
-        Ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio);
-        Ticket(string depart, string destination, string distributor, int price, int ticket_id, static Customer& new_cust);
-        string getDepart();
-        string getDestination();
-        string getDistributor();
-        int getPrice();
-        int getTicketID();
-        string getFIO();
-        void AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket);
-        Ticket InputTicket();
+        Ticket(const std::string& depart, const std::string& destination, const std::string& distributor, int price, int ticket_id, const std::string& fio);
+        Ticket(const std::string& depart, const std::string& destination, const std::string& distributor, int price, int ticket_id, const Customer& customer);
+        std::string GetDepart() const;
+        std::string GetDestination() const;
+        std::string GetDistributor() const;
+        int GetPrice() const;
+        int GetTicketID() const;
+        std::string GetFIO() const;
     };
-    //-----------------------------------------------------------------------------------------
+
     class Operation {
     private:
-        string ticket_operation; // "выдача билета" или "возврат билета"
-        string operation_date;
+        std::string ticket_operation;
+        std::string operation_date;
         int ticket_id;
         int tel;
+
     public:
-        Operation();
-        Operation(string ticket_operation, string operation_date, int tel, int ticketID);
-        Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust);
-        string getOperation();
-        string getOperationDate();
-        int getTicketID();
-        int getTel();
-        void AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op);
-        Operation InputOperation();
+        Operation(const std::string& ticket_operation, const std::string& operation_date, int tel, int ticketID);
+        Operation(const std::string& ticket_operation, const std::string& operation_date, const Ticket& ticket, const Customer& customer);
+        std::string GetOperation() const;
+        std::string GetOperationDate() const;
+        int GetTicketID() const;
+        int GetTel() const;
     };
-    //-----------------------------------------------------------------------------------------
+
     class Avia_DataBase {
     public:
-        struct Order* order_list;
-        struct Customer* customer_list;
-        struct Operation* operation_list;
-        struct Ticket* ticket_list;
-        size_t order_count;
-        size_t customer_count;
-        size_t operation_count;
-        size_t ticket_count;
-    public:
-        struct Avia_DataBase* createAviaDataBase();
-        // Функция для освобождения памяти базы данных
-        void destroyAviaDataBase(struct Avia_DataBase* db);
-        void PrintCustomerList();
-        void PrintTicketList();
-        void PrintOrderList();
-        void PrintOperationList();
+        Avia_DataBase();
+        ~Avia_DataBase();
+
+        void AddCustomer(const Customer& customer);
+        void AddOrder(const Order& order);
+        void AddTicket(const Ticket& ticket);
+        void AddOperation(const Operation& operation);
+
+        void PrintCustomerList() const;
+        void PrintTicketList() const;
+        void PrintOrderList() const;
+        void PrintOperationList() const;
+        Customer InputCustomerFromUser();
+        Order InputOrderFromUser();
+        Ticket InputTicketFromUser();
+        Operation InputOperationFromUser();
+
+    private:
+        bool IsInteger(const std::string& str) const;
+
+    private:
+        std::vector<Customer> customers;
+        std::vector<Order> orders;
+        std::vector<Ticket> tickets;
+        std::vector<Operation> operations;
     };
 }
 
-using Customer = AviaLib::Customer;
-using Order = AviaLib::Order;
-using Ticket = AviaLib::Ticket;
-using Avia_DataBase = AviaLib::Avia_DataBase;

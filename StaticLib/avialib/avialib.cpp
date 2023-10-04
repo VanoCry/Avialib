@@ -1,359 +1,360 @@
 #include "avialib.h"
-#include <string> 
 #include <iostream>
-#include <vector>
-using namespace std;
-/*
-*
-*
-*
-*
-*/
+#include <limits>
 namespace AviaLib {
-    Customer::Customer(string fio, int tel, string date, string adress) {
-        this->fio = fio;
-        this->tel = tel;
-        this->date = date;
-        this->adress = adress;
-    }
-    string Customer::GetFIO() {
+
+    Customer::Customer(const std::string& fio, int tel, const std::string& date, const std::string& address)
+        : fio(fio), tel(tel), date(date), address(address) {}
+
+    std::string Customer::GetFIO() const {
         return fio;
     }
-    int Customer::GetTel() {
+
+    int Customer::GetTel() const {
         return tel;
     }
-    string Customer::GetDate() {
+
+    std::string Customer::GetDate() const {
         return date;
     }
-    string Customer::GetAdress() {
-        return adress;
+
+    std::string Customer::GetAddress() const {
+        return address;
     }
-    void Customer::AddCustomerToDB(struct Avia_DataBase* db, Customer& new_cast) {
-        struct Customer customerToAdd(
-            new_cast.GetFIO(),
-            new_cast.GetTel(),
-            new_cast.GetDate(),
-            new_cast.GetAdress()
-        );
-        // Увеличиваем размер списка покупателей и добавляем нового покупателя
-        db->customer_count++;
-        db->customer_list = (struct Customer*)realloc(db->customer_list, db->customer_count * sizeof(struct Customer));
-        db->customer_list[db->customer_count - 1] = customerToAdd;
-    }
-    Customer Customer::InputCustomer() {
-        string fio;
-        int tel;
-        string date;
-        string address;
 
-        cout << "Введите ФИО: ";
-        getline(cin, fio);
+    Order::Order(const std::string& company_name, const std::string& distributor, int price, int ticket_id)
+        : company_name(company_name), distributor(distributor), price(price), ticket_id(ticket_id) {}
 
-        cout << "Введите телефон: ";
-        cin >> tel;
-
-        cout << "Введите дату: ";
-        cin.ignore(); // Очищаем буфер после ввода числа
-        getline(cin, date);
-
-        cout << "Введите адрес: ";
-        cin.ignore(); // Очищаем буфер после ввода числа
-        getline(cin, address);
-
-        return Customer(fio, tel, date, address);
-    }
-    //-----------------------------------------------------------------------------------------
-    Order::Order(string company_name, string distributor, int price, int ticket_id) {
-        this->company_name = company_name;
-        this->distributor = distributor;
-        this->price = price;
-        this->ticket_id = ticket_id;
-    }
-    string Order::getCompany() {
+    std::string Order::GetCompany() const {
         return company_name;
     }
 
-    string Order::getDistributor() {
+    std::string Order::GetDistributor() const {
         return distributor;
     }
 
-    int Order::getPrice() {
+    int Order::GetPrice() const {
         return price;
     }
 
-    int Order::getTicketID() {
+    int Order::GetTicketID() const {
         return ticket_id;
     }
-    void Order::AddOrderToDB(struct Avia_DataBase* db, Order& new_order) {
-        // Выделяем память для нового заказа
-        new_order.company_name = new_order.getCompany(); // Выделение памяти и копирование строки
-        new_order.distributor = new_order.getDistributor();
-        new_order.price = new_order.getPrice();
-        new_order.ticket_id = new_order.getTicketID();
 
-        // Увеличиваем размер списка заказов и добавляем новый заказ
-        db->order_count++;
-        db->order_list = (struct Order*)realloc(db->order_list, db->order_count * sizeof(struct Order));
-        db->order_list[db->order_count - 1] = new_order;
+    Ticket::Ticket(const std::string& depart, const std::string& destination, const std::string& distributor, int price, int ticket_id, const std::string& fio)
+        : depart(depart), destination(destination), distributor(distributor), price(price), ticket_id(ticket_id), fio(fio) {}
+
+    Ticket::Ticket(const std::string& depart, const std::string& destination, const std::string& distributor, int price, int ticket_id, const Customer& customer)
+        : depart(depart), destination(destination), distributor(distributor), price(price), ticket_id(ticket_id), fio(customer.GetFIO()) {}
+
+    std::string Ticket::GetDepart() const {
+        return depart;
     }
-    Order Order::InputOrder() {
-        string company_name;
-        string distributor;
+
+    std::string Ticket::GetDestination() const {
+        return destination;
+    }
+
+    std::string Ticket::GetDistributor() const {
+        return distributor;
+    }
+
+    int Ticket::GetPrice() const {
+        return price;
+    }
+
+    int Ticket::GetTicketID() const {
+        return ticket_id;
+    }
+
+    std::string Ticket::GetFIO() const {
+        return fio;
+    }
+
+    Operation::Operation(const std::string& ticket_operation, const std::string& operation_date, int tel, int ticketID)
+        : ticket_operation(ticket_operation), operation_date(operation_date), tel(tel), ticket_id(ticketID) {}
+
+    Operation::Operation(const std::string& ticket_operation, const std::string& operation_date, const Ticket& ticket, const Customer& customer)
+        : ticket_operation(ticket_operation), operation_date(operation_date), tel(customer.GetTel()), ticket_id(ticket.GetTicketID()) {}
+
+    std::string Operation::GetOperation() const {
+        return ticket_operation;
+    }
+
+    std::string Operation::GetOperationDate() const {
+        return operation_date;
+    }
+
+    int Operation::GetTicketID() const {
+        return ticket_id;
+    }
+
+    int Operation::GetTel() const {
+        return tel;
+    }
+
+    Avia_DataBase::Avia_DataBase() {}
+
+    Avia_DataBase::~Avia_DataBase() {}
+
+    void Avia_DataBase::AddCustomer(const Customer& customer) {
+        customers.push_back(customer);
+    }
+
+    void Avia_DataBase::AddOrder(const Order& order) {
+        orders.push_back(order);
+    }
+
+    void Avia_DataBase::AddTicket(const Ticket& ticket) {
+        tickets.push_back(ticket);
+    }
+
+    void Avia_DataBase::AddOperation(const Operation& operation) {
+        operations.push_back(operation);
+    }
+
+    void Avia_DataBase::PrintCustomerList() const {
+        if (customers.empty()) {
+            std::cout << "Список покупателей пуст..." << std::endl;
+        }
+        else {
+            std::cout << "            Список покупателей" << std::endl;
+            std::cout << "-----------------------------------------" << std::endl;
+            for (const Customer& customer : customers) {
+                std::cout << "ФИО: " << customer.GetFIO() << std::endl;
+                std::cout << "Телефон: " << customer.GetTel() << std::endl;
+                std::cout << "Дата: " << customer.GetDate() << std::endl;
+                std::cout << "Адрес: " << customer.GetAddress() << std::endl;
+                std::cout << "-----------------------------------------" << std::endl;
+            }
+        }
+    }
+
+    void Avia_DataBase::PrintOrderList() const {
+        if (orders.empty()) {
+            std::cout << "Список заказов пуст..." << std::endl;
+        }
+        else {
+            std::cout << "              Список Заказов" << std::endl;
+            std::cout << "-----------------------------------------" << std::endl;
+            for (const Order& order : orders) {
+                std::cout << "Название компании: " << order.GetCompany() << std::endl;
+                std::cout << "Дистрибьютор: " << order.GetDistributor() << std::endl;
+                std::cout << "Цена: " << order.GetPrice() << std::endl;
+                std::cout << "ID билета: " << order.GetTicketID() << std::endl;
+                std::cout << "-----------------------------------------" << std::endl;
+            }
+        }
+    }
+
+    void Avia_DataBase::PrintTicketList() const {
+        if (tickets.empty()) {
+            std::cout << "Список билетов пуст..." << std::endl;
+        }
+        else {
+            std::cout << "            Список билетов" << std::endl;
+            std::cout << "-----------------------------------------" << std::endl;
+            for (const Ticket& ticket : tickets) {
+                std::cout << "Отправление: " << ticket.GetDepart() << std::endl;
+                std::cout << "Прибытие: " << ticket.GetDestination() << std::endl;
+                std::cout << "Дистрибьютор: " << ticket.GetDistributor() << std::endl;
+                std::cout << "Цена: " << ticket.GetPrice() << std::endl;
+                std::cout << "ID билета: " << ticket.GetTicketID() << std::endl;
+                std::cout << "ФИО: " << ticket.GetFIO() << std::endl;
+                std::cout << "-----------------------------------------" << std::endl;
+            }
+        }
+    }
+
+    void Avia_DataBase::PrintOperationList() const {
+        if (operations.empty()) {
+            std::cout << "Список операций пуст..." << std::endl;
+        }
+        else {
+            std::cout << "              Список операций" << std::endl;
+            std::cout << "-----------------------------------------" << std::endl;
+            for (const Operation& operation : operations) {
+                std::cout << "Тип операции: " << operation.GetOperation() << std::endl;
+                std::cout << "Дата операции: " << operation.GetOperationDate() << std::endl;
+                std::cout << "ID билета: " << operation.GetTicketID() << std::endl;
+                std::cout << "Телефон: " << operation.GetTel() << std::endl;
+                std::cout << "-----------------------------------------" << std::endl;
+            }
+        }
+    }
+    Customer Avia_DataBase::InputCustomerFromUser() {
+        std::string fio;
+        int tel;
+        std::string date;
+        std::string address;
+
+        std::cout << "Введите ФИО: ";
+        std::cin.ignore();
+        std::getline(std::cin, fio);
+
+        std::cout << "Введите телефон: ";
+        while (true) {
+            std::string telStr;
+            std::getline(std::cin, telStr);
+            if (IsInteger(telStr)) {
+                tel = std::stoi(telStr);
+                break;
+            }
+            else {
+                std::cout << "Ошибка: Введите корректный номер телефона: ";
+            }
+        }
+
+        std::cout << "Введите дату: ";
+        std::getline(std::cin, date);
+
+        std::cout << "Введите адрес: ";
+        std::getline(std::cin, address);
+
+        return Customer(fio, tel, date, address);
+    }
+
+    Order Avia_DataBase::InputOrderFromUser() {
+        std::string company_name;
+        std::string distributor;
         int price;
         int ticket_id;
 
-        cout << "Введите название компании: ";
-        getline(cin, company_name);
+        std::cout << "Введите название компании: ";
+        std::cin.ignore();
+        std::getline(std::cin, company_name);
 
-        cout << "Введите дистрибьютора: ";
-        getline(cin, distributor);
+        std::cout << "Введите дистрибьютора: ";
+        std::getline(std::cin, distributor);
 
-        cout << "Введите цену: ";
-        cin >> price;
+        std::cout << "Введите цену: ";
+        while (true) {
+            std::string priceStr;
+            std::getline(std::cin, priceStr);
+            if (IsInteger(priceStr)) {
+                price = std::stoi(priceStr);
+                break;
+            }
+            else {
+                std::cout << "Ошибка: Введите корректную цену: ";
+            }
+        }
 
-        cout << "Введите номер билета: ";
-        cin >> ticket_id;
-
-        cin.ignore(); // Очищаем буфер после ввода чисел
+        std::cout << "Введите номер билета: ";
+        while (true) {
+            std::string ticketIdStr;
+            std::getline(std::cin, ticketIdStr);
+            if (IsInteger(ticketIdStr)) {
+                ticket_id = std::stoi(ticketIdStr);
+                break;
+            }
+            else {
+                std::cout << "Ошибка: Введите корректный номер билета: ";
+            }
+        }
 
         return Order(company_name, distributor, price, ticket_id);
     }
-    //-----------------------------------------------------------------------------------------
-    Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, string fio) {
-        this->depart = depart;
-        this->destination = destination;
-        this->distributor = distributor;
-        this->price = price;
-        this->ticket_id = ticket_id;
-        this->fio = fio;
-    }
-    Ticket::Ticket(string depart, string destination, string distributor, int price, int ticket_id, Customer& new_cust) {
-        this->depart = depart;
-        this->destination = destination;
-        this->distributor = distributor;
-        this->price = price;
-        this->ticket_id = ticket_id;
-        this->fio = new_cust.GetFIO();
-    }
-    string Ticket::getDepart() {
-        return depart;
-    }
-    string Ticket::getDestination() {
-        return destination;
-    }
-    string Ticket::getDistributor() {
-        return distributor;
-    }
-    int Ticket::getPrice() {
-        return price;
-    }
-    int Ticket::getTicketID() {
-        return ticket_id;
-    }
-    string Ticket::getFIO() {
-        return fio;
-    }
-    void Ticket::AddTicketToDB(struct Avia_DataBase* db, struct Ticket& new_ticket) {
-        // Выделяем память для нового билета
-        // Заполняем новый билет данными из параметра new_ticket
-        struct Ticket ticketToAdd(
-            new_ticket.getDepart(),
-            new_ticket.getDestination(),
-            new_ticket.getDistributor(),
-            new_ticket.getPrice(),
-            new_ticket.getTicketID(),
-            new_ticket.getFIO()
-        );
-        // Увеличиваем размер списка билетов и добавляем новый билет
-        db->ticket_count++;
-        db->ticket_list = (struct Ticket*)realloc(db->ticket_list, db->ticket_count * sizeof(struct Ticket));
-        db->ticket_list[db->ticket_count - 1] = ticketToAdd;
-    }
-    Ticket Ticket::InputTicket() {
-        string depart;
-        string destination;
-        string distributor;
+
+    Ticket Avia_DataBase::InputTicketFromUser() {
+        std::string depart;
+        std::string destination;
+        std::string distributor;
         int price;
         int ticket_id;
-        string fio;
+        std::string fio;
 
-        cout << "Введите место отправления: ";
-        getline(cin, depart);
+        std::cout << "Введите место отправления: ";
+        std::cin.ignore();
+        std::getline(std::cin, depart);
 
-        cout << "Введите место назначения: ";
-        getline(cin, destination);
+        std::cout << "Введите место назначения: ";
+        std::getline(std::cin, destination);
 
-        cout << "Введите дистрибьютора: ";
-        getline(cin, distributor);
+        std::cout << "Введите дистрибьютора: ";
+        std::getline(std::cin, distributor);
 
-        cout << "Введите цену: ";
-        cin >> price;
+        std::cout << "Введите цену: ";
+        while (true) {
+            std::string priceStr;
+            std::getline(std::cin, priceStr);
+            if (IsInteger(priceStr)) {
+                price = std::stoi(priceStr);
+                break;
+            }
+            else {
+                std::cout << "Ошибка: Введите корректную цену: ";
+            }
+        }
 
-        cout << "Введите номер билета: ";
-        cin >> ticket_id;
+        std::cout << "Введите номер билета: ";
+        while (true) {
+            std::string ticketIdStr;
+            std::getline(std::cin, ticketIdStr);
+            if (IsInteger(ticketIdStr)) {
+                ticket_id = std::stoi(ticketIdStr);
+                break;
+            }
+            else {
+                std::cout << "Ошибка: Введите корректный номер билета: ";
+            }
+        }
 
-        cin.ignore(); // Очищаем буфер после ввода чисел
-
-        cout << "Введите ФИО: ";
-        getline(cin, fio);
+        std::cout << "Введите ФИО: ";
+        std::getline(std::cin, fio);
 
         return Ticket(depart, destination, distributor, price, ticket_id, fio);
     }
-    //-----------------------------------------------------------------------------------------
-    Operation::Operation(string ticket_operation, string operation_date, static Ticket& new_ticket, static Customer& new_cust) {
-        this->ticket_operation = ticket_operation;
-        this->operation_date = operation_date;
-        this->tel = new_cust.GetTel();
-        this->ticket_id = new_ticket.getTicketID();
-    }
-    Operation::Operation(string ticket_operation, string operation_date, int tel, int ticketID) {
-        this->ticket_operation = ticket_operation;
-        this->operation_date = operation_date;
-        this->tel = tel;
-        this->ticket_id = ticketID;
-    }
-    string Operation::getOperation() {
-        return ticket_operation;
-    }
-    string Operation::getOperationDate() {
-        return operation_date;
-    }
-    int Operation::getTicketID() {
-        return ticket_id;
-    }
-    int Operation::getTel() {
-        return tel;
-    }
-    void Operation::AddOperationToDB(struct Avia_DataBase* db, struct Operation& new_op) {
-        // Выделяем память для нового билета
-        // Заполняем новый билет данными из параметра new_ticket
-        struct Operation opToAdd(
-            new_op.getOperation(),
-            new_op.getOperationDate(),
-            new_op.getTicketID(),
-            new_op.getTel()
-        );
-        // Увеличиваем размер списка билетов и добавляем новый билет
-        db->operation_count++;
-        db->operation_list = (struct Operation*)realloc(db->operation_list, db->operation_count * sizeof(struct Operation));
-        db->operation_list[db->operation_count - 1] = opToAdd;
-    }
-    Operation Operation::InputOperation() {
-        string ticket_operation;
-        string operation_date;
+
+    Operation Avia_DataBase::InputOperationFromUser() {
+        std::string ticket_operation;
+        std::string operation_date;
         int ticket_id;
         int tel;
 
-        cout << "Введите тип операции (выдача билета или возврат билета): ";
-        getline(cin, ticket_operation);
+        std::cout << "Введите тип операции (выдача билета или возврат билета): ";
+        std::cin.ignore();
+        std::getline(std::cin, ticket_operation);
 
-        cout << "Введите дату операции: ";
-        getline(cin, operation_date);
+        std::cout << "Введите дату операции: ";
+        std::getline(std::cin, operation_date);
 
-        cout << "Введите номер билета: ";
-        cin >> ticket_id;
+        std::cout << "Введите номер билета: ";
+        while (true) {
+            std::string ticketIdStr;
+            std::getline(std::cin, ticketIdStr);
+            if (IsInteger(ticketIdStr)) {
+                ticket_id = std::stoi(ticketIdStr);
+                break;
+            }
+            else {
+                std::cout << "Ошибка: Введите корректный номер билета: ";
+            }
+        }
 
-        cout << "Введите номер телефона: ";
-        cin >> tel;
-
-        cin.ignore(); // Очищаем буфер после ввода чисел
+        std::cout << "Введите номер телефона: ";
+        while (true) {
+            std::string telStr;
+            std::getline(std::cin, telStr);
+            if (IsInteger(telStr)) {
+                tel = std::stoi(telStr);
+                break;
+            }
+            else {
+                std::cout << "Ошибка: Введите корректный номер телефона: ";
+            }
+        }
 
         return Operation(ticket_operation, operation_date, ticket_id, tel);
     }
-    //-----------------------------------------------------------------------------------------
-    struct Avia_DataBase* Avia_DataBase::createAviaDataBase() {
-        struct Avia_DataBase* db = (struct Avia_DataBase*)malloc(sizeof(struct Avia_DataBase));
-        if (db == NULL) {
-            return NULL; // Ошибка выделения памяти
-        }
 
-        // Инициализируем списки как пустые
-        db->order_list = NULL;
-        db->customer_list = NULL;
-        db->operation_list = NULL;
-        db->ticket_list = NULL;
-        db->order_count = 0;
-        db->customer_count = 0;
-        db->operation_count = 0;
-        db->ticket_count = 0;
-
-        return db;
-    }
-    void Avia_DataBase::destroyAviaDataBase(struct Avia_DataBase* db) {
-        if (db == NULL) {
-            return;
+    bool Avia_DataBase::IsInteger(const std::string& str) const {
+        if (str.empty()) return false;
+        for (char c : str) {
+            if (!std::isdigit(c)) return false;
         }
-
-        // Освобождаем память для списков и их элементов
-        free(db->order_list);
-        free(db->customer_list);
-        free(db->operation_list);
-        free(db->ticket_list);
-
-        // Освобождаем память для самой базы данных
-        free(db);
-    }
-    void Avia_DataBase::PrintCustomerList() {
-        if (customer_count > 0) {
-            cout << "            Список покупателей" << endl;
-            cout << "-----------------------------------------" << endl;
-            for (size_t i = 0; i < customer_count; ++i) {
-                cout << "ФИО: " << customer_list[i].GetFIO() << endl;
-                cout << "Телефон: " << customer_list[i].GetTel() << endl;
-                cout << "Дата: " << customer_list[i].GetDate() << endl;
-                cout << "Адрес: " << customer_list[i].GetAdress() << endl;
-                cout << "-----------------------------------------" << endl;
-            }
-        }
-        else cout << "Список покупателей пуст..." << endl;
-    }
-    void Avia_DataBase::PrintTicketList() {
-        if (ticket_count > 0) {
-            cout << "            Список билетов" << endl;
-            cout << "-----------------------------------------" << endl;
-            for (size_t i = 0; i < ticket_count; ++i) {
-                cout << "Билет #" << i + 1 << endl;
-                cout << "Отправление: " << ticket_list[i].getDepart() << endl;
-                cout << "Прибытие: " << ticket_list[i].getDestination() << endl;
-                cout << "Дистрибьютор: " << ticket_list[i].getDistributor() << endl;
-                cout << "Цена: " << ticket_list[i].getPrice() << endl;
-                cout << "ID билета: " << ticket_list[i].getTicketID() << endl;
-                cout << "ФИО: " << ticket_list[i].getFIO() << endl;
-                cout << "-----------------------------------------" << endl;
-            }
-        }
-        else cout << "Список билетов пуст...";
+        return true;
     }
 
-    void Avia_DataBase::PrintOrderList() {
-        if (order_count > 0) {
-            cout << "              Список Заказов" << endl;
-            cout << "-----------------------------------------" << endl;
-            for (size_t i = 0; i < order_count; ++i) {
-                cout << "Заказ #" << i + 1 << endl;
-                cout << "Название компании: " << order_list[i].getCompany() << endl;
-                cout << "Дистрибьютор: " << order_list[i].getDistributor() << endl;
-                cout << "Цена: " << order_list[i].getPrice() << endl;
-                cout << "ID билета: " << order_list[i].getTicketID() << endl;
-                cout << "-----------------------------------------" << endl;
-            }
-        }
-        else cout << "Список заказов пуст..." << endl;
-    }
-
-    void Avia_DataBase::PrintOperationList() {
-        if (operation_count > 0) {
-            cout << "              Список операций" << endl;
-            cout << "-----------------------------------------" << endl;
-            for (size_t i = 0; i < operation_count; ++i) {
-                cout << "Операция #" << i + 1 << endl;
-                cout << "Тип операции: " << operation_list[i].getOperation() << endl;
-                cout << "Дата операции: " << operation_list[i].getOperationDate() << endl;
-                cout << "ID билета: " << operation_list[i].getTicketID() << endl;
-                cout << "Телефон: " << operation_list[i].getTel() << endl;
-                cout << "-----------------------------------------" << endl;
-            }
-        }
-        else cout << "Список операций пуст..." << endl;
-    }
 }
+
