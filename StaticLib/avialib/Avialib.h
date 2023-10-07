@@ -7,14 +7,14 @@ namespace AviaLib {
     class Customer {
     private:
         std::string fio;
-        int tel;
+        std::string tel;
         std::string date;
         std::string address;
 
     public:
-        Customer(const std::string& fio, int tel, const std::string& date, const std::string& address);
+        Customer(const std::string& fio, const std::string& tel, const std::string& date, const std::string& address);
         std::string GetFIO() const;
-        int GetTel() const;
+        std::string GetTel() const;
         std::string GetDate() const;
         std::string GetAddress() const;
     };
@@ -59,15 +59,15 @@ namespace AviaLib {
         std::string ticket_operation;
         std::string operation_date;
         int ticket_id;
-        int tel;
+        std::string tel;
 
     public:
-        Operation(const std::string& ticket_operation, const std::string& operation_date, int tel, int ticketID);
+        Operation(const std::string& ticket_operation, const std::string& operation_date, const std::string& tel, int ticketID);
         Operation(const std::string& ticket_operation, const std::string& operation_date, const Ticket& ticket, const Customer& customer);
         std::string GetOperation() const;
         std::string GetOperationDate() const;
         int GetTicketID() const;
-        int GetTel() const;
+        std::string GetTel() const;
     };
 
     class Avia_DataBase {

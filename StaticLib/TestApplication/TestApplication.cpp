@@ -7,13 +7,20 @@ int main() {
     AviaLib::Avia_DataBase aviaDB;
 
     // Тестирование функций ввода данных
-    AviaLib::Customer customer = aviaDB.InputCustomerFromUser();
+    std::cout << "Ввод Покупателя №1" << std::endl;
+    AviaLib::Customer customer1 = aviaDB.InputCustomerFromUser();
+    std::cout << "Ввод Покупателя №2" << std::endl;
+    AviaLib::Customer customer2 = aviaDB.InputCustomerFromUser();
+    std::cout << "Ввод Ввод заказа" << std::endl;
     AviaLib::Order order = aviaDB.InputOrderFromUser();
-    AviaLib::Ticket ticket = aviaDB.InputTicketFromUser();
+    std::cout << "Ввод билета" << std::endl;
+    AviaLib::Ticket ticket = aviaDB.InputTicketFromUser(); 
+    std::cout << "Ввод операции" << std::endl;
     AviaLib::Operation operation = aviaDB.InputOperationFromUser();
 
     // Добавление данных в базу данных
-    aviaDB.AddCustomer(customer);
+    aviaDB.AddCustomer(customer1);
+    aviaDB.AddCustomer(customer2);
     aviaDB.AddOrder(order);
     aviaDB.AddTicket(ticket);
     aviaDB.AddOperation(operation);

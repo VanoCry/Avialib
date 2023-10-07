@@ -1,16 +1,18 @@
 #include "avialib.h"
 #include <iostream>
 #include <limits>
+#include <iomanip>
+using namespace std;
 namespace AviaLib {
 
-    Customer::Customer(const std::string& fio, int tel, const std::string& date, const std::string& address)
+    Customer::Customer(const std::string& fio, const string& tel, const std::string& date, const std::string& address)
         : fio(fio), tel(tel), date(date), address(address) {}
 
     std::string Customer::GetFIO() const {
         return fio;
     }
 
-    int Customer::GetTel() const {
+    std::string Customer::GetTel() const {
         return tel;
     }
 
@@ -71,7 +73,7 @@ namespace AviaLib {
         return fio;
     }
 
-    Operation::Operation(const std::string& ticket_operation, const std::string& operation_date, int tel, int ticketID)
+    Operation::Operation(const std::string& ticket_operation, const std::string& operation_date, const std::string& tel, int ticketID)
         : ticket_operation(ticket_operation), operation_date(operation_date), tel(tel), ticket_id(ticketID) {}
 
     Operation::Operation(const std::string& ticket_operation, const std::string& operation_date, const Ticket& ticket, const Customer& customer)
@@ -89,7 +91,7 @@ namespace AviaLib {
         return ticket_id;
     }
 
-    int Operation::GetTel() const {
+    std::string Operation::GetTel() const {
         return tel;
     }
 
@@ -177,14 +179,14 @@ namespace AviaLib {
                 std::cout << "Тип операции: " << operation.GetOperation() << std::endl;
                 std::cout << "Дата операции: " << operation.GetOperationDate() << std::endl;
                 std::cout << "ID билета: " << operation.GetTicketID() << std::endl;
-                std::cout << "Телефон: " << operation.GetTel() << std::endl;
+                std::cout << "Телефон: " << operation.GetTel()  << std::endl;
                 std::cout << "-----------------------------------------" << std::endl;
             }
         }
     }
     Customer Avia_DataBase::InputCustomerFromUser() {
         std::string fio;
-        int tel;
+        std::string tel;
         std::string date;
         std::string address;
 
@@ -193,17 +195,7 @@ namespace AviaLib {
         std::getline(std::cin, fio);
 
         std::cout << "Введите телефон: ";
-        while (true) {
-            std::string telStr;
-            std::getline(std::cin, telStr);
-            if (IsInteger(telStr)) {
-                tel = std::stoi(telStr);
-                break;
-            }
-            else {
-                std::cout << "Ошибка: Введите корректный номер телефона: ";
-            }
-        }
+        std::getline(std::cin, tel);
 
         std::cout << "Введите дату: ";
         std::getline(std::cin, date);
@@ -245,7 +237,7 @@ namespace AviaLib {
             std::string ticketIdStr;
             std::getline(std::cin, ticketIdStr);
             if (IsInteger(ticketIdStr)) {
-                ticket_id = std::stoi(ticketIdStr);
+                ticket_id = std::stold(ticketIdStr);
                 break;
             }
             else {
@@ -310,7 +302,7 @@ namespace AviaLib {
         std::string ticket_operation;
         std::string operation_date;
         int ticket_id;
-        int tel;
+        std::string tel;
 
         std::cout << "Введите тип операции (выдача билета или возврат билета): ";
         std::cin.ignore();
@@ -324,7 +316,7 @@ namespace AviaLib {
             std::string ticketIdStr;
             std::getline(std::cin, ticketIdStr);
             if (IsInteger(ticketIdStr)) {
-                ticket_id = std::stoi(ticketIdStr);
+                ticket_id = std::stold(ticketIdStr);
                 break;
             }
             else {
@@ -333,19 +325,9 @@ namespace AviaLib {
         }
 
         std::cout << "Введите номер телефона: ";
-        while (true) {
-            std::string telStr;
-            std::getline(std::cin, telStr);
-            if (IsInteger(telStr)) {
-                tel = std::stoi(telStr);
-                break;
-            }
-            else {
-                std::cout << "Ошибка: Введите корректный номер телефона: ";
-            }
-        }
+        std::getline(std::cin, tel);
 
-        return Operation(ticket_operation, operation_date, ticket_id, tel);
+        return Operation(ticket_operation, operation_date, tel, ticket_id);
     }
 
     bool Avia_DataBase::IsInteger(const std::string& str) const {
