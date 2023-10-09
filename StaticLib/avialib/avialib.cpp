@@ -190,8 +190,8 @@ namespace AviaLib {
         std::string date;
         std::string address;
 
+        std::cout << " ";
         std::cout << "Введите ФИО: ";
-        std::cin.ignore();
         std::getline(std::cin, fio);
 
         std::cout << "Введите телефон: ";
@@ -211,9 +211,8 @@ namespace AviaLib {
         std::string distributor;
         int price;
         int ticket_id;
-
+        std::cout << " ";
         std::cout << "Введите название компании: ";
-        std::cin.ignore();
         std::getline(std::cin, company_name);
 
         std::cout << "Введите дистрибьютора: ";
@@ -255,9 +254,8 @@ namespace AviaLib {
         int price;
         int ticket_id;
         std::string fio;
-
+        std::cout << " ";
         std::cout << "Введите место отправления: ";
-        std::cin.ignore();
         std::getline(std::cin, depart);
 
         std::cout << "Введите место назначения: ";
@@ -303,9 +301,7 @@ namespace AviaLib {
         std::string operation_date;
         int ticket_id;
         std::string tel;
-
         std::cout << "Введите тип операции (выдача билета или возврат билета): ";
-        std::cin.ignore();
         std::getline(std::cin, ticket_operation);
 
         std::cout << "Введите дату операции: ";

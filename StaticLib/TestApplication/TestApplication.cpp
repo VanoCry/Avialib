@@ -11,7 +11,7 @@ int main() {
     AviaLib::Customer customer1 = aviaDB.InputCustomerFromUser();
     std::cout << "Ввод Покупателя №2" << std::endl;
     AviaLib::Customer customer2 = aviaDB.InputCustomerFromUser();
-    std::cout << "Ввод Ввод заказа" << std::endl;
+    std::cout << "Ввод заказа" << std::endl;
     AviaLib::Order order = aviaDB.InputOrderFromUser();
     std::cout << "Ввод билета" << std::endl;
     AviaLib::Ticket ticket = aviaDB.InputTicketFromUser(); 
